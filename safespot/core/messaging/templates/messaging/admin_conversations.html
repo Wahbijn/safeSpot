@@ -1,0 +1,16 @@
+<form method="post" action="{% url 'messaging:client_send' %}">
+  {% csrf_token %}
+  <textarea name="content" required></textarea>
+  <button type="submit">Envoyer</button>
+</form>
+
+<div id="messages">
+  {% for m in messages %}
+    <div class="message {{ m.sender }}">
+      <small>{{ m.created_at }}</small>
+      <p>{{ m.content }}</p>
+    </div>
+  {% empty %}
+    <p>Aucun message</p>
+  {% endfor %}
+</div>

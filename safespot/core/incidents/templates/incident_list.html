@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block title %}User-Reported Incidents{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background: #f8f9fa;
+        color: #212529;
+    }
+
+    .welcome-section {
+        background: linear-gradient(135deg, #4A90E2 0%, #1B3A57 100%);
+        color: #fdfdfd;
+        padding: 40px 0;
+        margin-bottom: 30px;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .card-custom {
+        background: white;
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        padding: 25px;
+        margin-bottom: 20px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(27, 58, 87, 0.15);
+    }
+
+    .section-title {
+        color: #1B3A57;
+        font-weight: 700;
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 3px solid #4A90E2;
+    }
+
+    .btn-action {
+        background: linear-gradient(135deg, #4A90E2, #357ABD);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-block;
+        font-weight: 600;
+    }
+
+    .btn-action:hover {
+        background: linear-gradient(135deg, #357ABD, #2E6BA8);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+    }
+
+    .table-custom {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .table-custom thead {
+        background: linear-gradient(135deg, #1B3A57, #4A90E2);
+        color: white;
+    }
+
+    .table-custom thead th {
+        border: none;
+        padding: 15px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .table-custom tbody tr {
+        transition: background 0.2s ease;
+    }
+
+    .table-custom tbody tr:hover {
+        background: #f8f9fa;
+    }
+
+    .table-custom tbody td {
+        padding: 15px;
+        border-bottom: 1px solid #e9ecef;
+        vertical-align: middle;
+    }
+
+    .badge-count {
+        background: linear-gradient(135deg, #4A90E2, #357ABD);
+        color: white;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .alert-custom {
+        border-radius: 10px;
+        border: none;
+        padding: 15px 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+</style>
+
+<!-- Welcome Header -->
+<div class="welcome-section">
+    <div class="container-lg">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="mb-2" style="font-size: 2rem; font-weight: 700;">
+                    <i class="fas fa-list-alt me-2"></i>User-Reported Incidents
+                </h1>
+                <p class="mb-0" style="font-size: 1.1rem; opacity: 0.95;">
+                    Summary of user-reported incidents shared through the app
+                </p>
+            </div>
+            <a href="{% url 'dashboard_home' %}" class="btn-action">
+                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="container-lg">
+    <!-- Incident List Section -->
+    <div class="card-custom">
+        <h3 class="section-title">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            Reported Incidents
+            <span class="badge-count ms-2">{{ incidents|length }}</span>
+        </h3>
+
+        {% if incidents %}
+            <div class="table-responsive">
+                <table class="table table-custom mb-0">
+                    <thead>
+                        <tr>
+                            <th>Location</th>
+                            <th>Date & Time</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for incident in incidents %}
+                            <tr>
+                                <td>
+                                    <i class="fas fa-map-marker-alt text-danger me-2"></i>
+                                    {{ incident.localisation }}
+                                </td>
+                                <td>
+                                    <i class="fas fa-clock text-primary me-2"></i>
+                                    {{ incident.accident_datetime|date:"M d, Y H:i" }}
+                                </td>
+                                <td>{{ incident.description|default:"No description" }}</td>
+                                <td>
+                                    {% if incident.is_confirmed %}
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check-circle me-1"></i>Confirmed
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-warning">
+                                            <i class="fas fa-clock me-1"></i>Pending
+                                        </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-inbox fa-4x mb-3" style="color: #cbd5e1;"></i>
+                <p class="text-muted mb-0" style="font-size: 1.1rem;">No incidents reported at the moment</p>
+                <p class="text-muted mt-2" style="font-size: 0.9rem;">Incidents reported by users will appear here</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

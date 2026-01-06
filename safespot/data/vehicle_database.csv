@@ -1,0 +1,31 @@
+make,model,min_year,max_year,base_value,category
+Toyota,Camry,2015,2024,25000,Sedan
+Toyota,Corolla,2015,2024,22000,Sedan
+Toyota,RAV4,2015,2024,28000,SUV
+Honda,Civic,2015,2024,24000,Sedan
+Honda,Accord,2015,2024,28000,Sedan
+Honda,CR-V,2015,2024,30000,SUV
+Ford,F-150,2015,2024,45000,Truck
+Ford,Explorer,2015,2024,38000,SUV
+Ford,Mustang,2015,2024,35000,Sports
+Chevrolet,Silverado,2015,2024,48000,Truck
+Chevrolet,Equinox,2015,2024,28000,SUV
+Chevrolet,Malibu,2015,2024,24000,Sedan
+Tesla,Model 3,2018,2024,48000,Electric
+Tesla,Model Y,2020,2024,52000,Electric
+Tesla,Model S,2015,2024,85000,Electric
+BMW,3 Series,2015,2024,42000,Luxury
+BMW,X5,2015,2024,62000,Luxury
+Mercedes-Benz,C-Class,2015,2024,45000,Luxury
+Mercedes-Benz,E-Class,2015,2024,58000,Luxury
+Nissan,Altima,2015,2024,24000,Sedan
+Nissan,Rogue,2015,2024,28000,SUV
+Hyundai,Elantra,2015,2024,21000,Sedan
+Hyundai,Tucson,2015,2024,26000,SUV
+Jeep,Wrangler,2015,2024,35000,SUV
+Jeep,Grand Cherokee,2015,2024,40000,SUV
+Subaru,Outback,2015,2024,30000,SUV
+Subaru,Forester,2015,2024,28000,SUV
+Mazda,CX-5,2015,2024,28000,SUV
+Mazda,Mazda3,2015,2024,22000,Sedan
+Volkswagen,Jetta,2015,2024,23000,Sedan

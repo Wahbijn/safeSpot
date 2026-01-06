@@ -1,0 +1,2766 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard - SafeSpot</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f8f9fa;
+             color: #212529;
+        }
+        .navbar-custom .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+           .navbar-custom {
+            background: linear-gradient(135deg, #4A90E2 0%, #1B3A57 100%);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-custom .navbar-brand { font-weight: 700;
+             font-size: 1.5rem; 
+             font-family: 'Segoe UI', Arial, sans-serif;
+              color: (#1B3A57); }
+
+        .welcome-section { background: linear-gradient(135deg, #508fd6 0%, #1B3A57 100%);
+             color: #fdfdfd; 
+             padding: 40px 0; 
+             margin-bottom: 30px;
+              border-radius: 0 0 15px 15px;
+               box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+               text-align: center;  }
+
+        .card-custom {
+            background: white;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card-custom:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px #1B3A57;
+        }
+
+        .stat-box {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px #1B3A57;
+            margin-bottom: 15px;
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1B3A57;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .btn-action {
+            background: #1B3A57;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-action:hover {
+            background: #5ba0f0;
+            color: white;
+        }
+
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .quick-link {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            text-decoration: none;
+            color: #1B3A57;
+            transition: all 0.3s ease;
+        }
+
+        .quick-link:hover {
+            border-color: #06264a;
+            background: #f0f3ff;
+            color: #5ba0f0;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .quick-link i {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #1B3A57;
+            padding-bottom: 10px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        /* Admin specific styles */
+        .chart-container {
+            height: 300px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .chart-placeholder {
+            text-align: center;
+            color: #999;
+        }
+
+        .chart-placeholder i {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            opacity: 0.3;
+        }
+
+        .admin-stats {
+            background: linear-gradient(135deg, #1B3A57 0%, #4A90E2 100%);
+            color: white;
+            padding: 20px 25px 40px 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            position: relative;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .admin-stats .stat-icon {
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+            margin-top: 10px;
+            opacity: 0.9;
+        }
+
+        .admin-stats .stat-icon img {
+            width: 50px !important;
+            height: 50px !important;
+            margin-bottom: 0px;
+        }
+
+        .admin-stats .stat-number {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 5px 0;
+            line-height: 1;
+        }
+
+        .admin-stats .stat-label {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+
+        .admin-stats small {
+            position: absolute;
+            bottom: 12px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.75);
+            padding: 0 10px;
+            line-height: 1.2;
+        }
+
+        /* Risk level colors */
+        .admin-stats.risk-low {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .admin-stats.risk-medium {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .admin-stats.risk-high {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .admin-stats.risk-critical {
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+        }
+
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+            margin-top: 15px;
+        }
+
+        .heatmap-cell {
+            height: 40px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .heatmap-legend {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+            font-size: 0.8rem;
+        }
+
+        .heatmap-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .heatmap-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+{% load humanize %}
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+    <div class="container-lg">
+        <a class="navbar-brand" href="{% url 'dashboard_home' %}">
+            <i class="fas fa-map-pin"></i> SafeSpot
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'dashboard_home' %}">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'profile' %}">Profile</a>
+                </li>
+                {% if user.role == 'admin' %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'admin_clients_list' %}">
+                        <i class="fas fa-users"></i> Manage users
+                    </a>
+                </li>
+                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                </li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Welcome Section -->
+<div class="welcome-section">
+    <div class="container-lg">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="mb-2">Welcome back, {{ user.first_name|default:user.username }}!</h1>
+                <p class="mb-0">
+                    {% if user.role == 'admin' %}
+                    System Administration Dashboard
+                    {% else %}
+                    Stay safe and connected with SafeSpot
+                    {% endif %}
+                </p>
+            </div>
+            <div class="col-md-4 text-end">
+                <div style="font-size: 3rem;">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Dashboard Content -->
+<div class="container-lg">
+    {% if user.role != 'admin' %}
+    <!-- Client Dashboard -->
+    <!-- Stats Row -->
+    <div class="row mb-5">
+        <div class="col-md-3">
+            <div class="stat-box">
+                <div class="stat-icon" style="color: #ffc107;">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="stat-number">{{ reported_accidents_count }}</div>
+                <div class="stat-label">Total Reported Accidents</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-box">
+                <div class="stat-icon" style="color: #667eea;">
+                    <i class="fas fa-tasks"></i>
+                </div>
+                <div class="stat-number">{{ user_predictions_count }}</div>
+                <div class="stat-label">Total Predictions</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-box">
+                <div class="stat-icon" style="color: #28a745;">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <div class="stat-number">{{ total_accidents }}</div>
+                <div class="stat-label">Total Accidents</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-box">
+                <div class="stat-icon" style="color: #ff6b6b;">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div class="stat-number">0</div>
+                <div class="stat-label">Alerts</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="card-custom">
+        <h3 class="section-title">
+            <i class="fas fa-bolt"></i> Quick Actions
+        </h3>
+        <div class="quick-links">
+            <a href="{% url 'incidents:add_accident' %}" class="quick-link">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div>Report Incident</div>
+            </a>
+            <a href="{% url 'incidents:accident_list' %}" class="quick-link">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div>Accident list</div>
+            </a>
+            <a href="{% url 'routes:route_page' %}" class="quick-link">
+                <i class="fas fa-map"></i>
+                <div>View Routes</div>
+            </a>
+            <a href="#" class="quick-link">
+                <i class="fas fa-crystal-ball"></i>
+                <div>Predictions</div>
+            </a>
+            <div class="quick-link" onclick="openClientSupport()" style="cursor: pointer; position: relative;">
+                <i class="fas fa-headset"></i>
+                <div>Contact Support</div>
+                <span id="messageNotificationBadgeUser" style="position: absolute; top: 8px; right: 8px; background: #ef4444; color: white; border-radius: 50%; width: 22px; height: 22px; display: none; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; animation: pulse 2s infinite;"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="row mt-5">
+        <div class="col-md-8">
+            <div class="card-custom text-center">
+                <h3 class="section-title">
+                    <i class="fas fa-history"></i> Declare an Accident
+                </h3>
+                <button class="btn btn-action" data-bs-toggle="modal" data-bs-target="#accidentReportModal">
+                    <i class="fas fa-plus-circle"></i> Declare Accident
+                </button>
+            </div>
+        </div>
+
+       
+        <div class="col-md-4">
+            <div class="card-custom">
+                <h5 class="mb-3"><i class="fas fa-user"></i> User Info</h5>
+                <div class="mb-3">
+                    <small class="text-muted">Username</small>
+                    <p class="mb-0"><strong>{{ user.username }}</strong></p>
+                </div>
+                <div class="mb-3">
+                    <small class="text-muted">Email</small>
+                    <p class="mb-0"><strong>{{ user.email }}</strong></p>
+                </div>
+                <div class="mb-3">
+                    <small class="text-muted">Member Since</small>
+                    <p class="mb-0"><strong>{{ user.date_joined|date:"M d, Y" }}</strong></p>
+                </div>
+                <a href="{% url 'profile' %}" class="btn btn-action w-100">View Profile</a>
+            </div>
+
+            <!-- System Status -->
+            <div class="card-custom">
+                <h5 class="mb-3"><i class="fas fa-heartbeat"></i> System Status</h5>
+                <div class="mb-2">
+                    <span class="badge bg-success">
+                        <i class="fas fa-check-circle"></i> All Systems Online
+                    </span>
+                </div>
+                <small class="text-muted">Last updated: Just now</small>
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+
+    <div class="row mb-5">
+        <div class="col-md-3">
+            <div class="admin-stats">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-number">{{ total_users }}</div>
+                <div class="stat-label">Total Users</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="admin-stats">
+                <div class="stat-icon">
+                    <i class="fas fa-route"></i>
+                </div>
+                <div class="stat-number">{{ daily_predictions_count }}</div>
+                <div class="stat-label">Daily Predictions</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="admin-stats {% if current_weather and current_weather.risk_score %}{% if current_weather.risk_score < 25 %}risk-low{% elif current_weather.risk_score < 50 %}risk-medium{% elif current_weather.risk_score < 75 %}risk-high{% else %}risk-critical{% endif %}{% endif %}" id="riskScoreBox">
+                <div class="stat-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-number" id="riskScoreValue">
+                    {% if current_weather and current_weather.risk_score %}
+                        {{ current_weather.risk_score }}%
+                    {% else %}
+                        --
+                    {% endif %}
+                </div>
+                <div class="stat-label">Accident Risk</div>
+                <small style="color: rgba(255,255,255,0.8); font-size: 0.75rem; display: block; margin-top: 5px;">
+                    <i class="fas fa-cloud"></i> Weather-based
+                </small>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="admin-stats" id="weatherStatBox">
+                {% if current_weather %}
+                <div class="stat-icon">
+                    <img src="https://openweathermap.org/img/wn/{{ current_weather.icon }}@2x.png"
+                         alt="{{ current_weather.weather }}"
+                         style="width: 60px; height: 60px; filter: brightness(0) invert(1);">
+                </div>
+                <div class="stat-number">{{ current_weather.temp }}°C</div>
+                <div class="stat-label">{{ current_weather.weather }}</div>
+                <small style="color: rgba(255,255,255,0.8); font-size: 0.75rem; display: block; margin-top: 5px;">
+                    <i class="fas fa-map-marker-alt"></i> {{ weather_city }}
+                </small>
+                {% else %}
+                <div class="stat-icon">
+                    <i class="fas fa-cloud-sun-rain"></i>
+                </div>
+                <div class="stat-number">--</div>
+                <div class="stat-label">Weather Unavailable</div>
+                <small></small>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row mb-5">
+        <div class="col-md-6">
+            <div class="card-custom mb-4">
+                <h3 class="section-title">
+                    <i class="fas fa-list"></i> Top 3 Reported Accidents
+                </h3>
+                <ul class="list-group mb-3">
+                    {% for incident in top_user_incidents %}
+                        <li class="list-group-item">
+                            <strong>{{ incident.localisation }}</strong> <br>
+                            <span class="text-muted">{{ incident.accident_datetime|date:"M d, Y H:i" }}</span><br>
+                            <span>{{ incident.description|default:"No description" }}</span>
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item">No accidents reported yet.</li>
+                    {% endfor %}
+                </ul>
+                <a href="{% url 'incidents:accident_list' %}" class="btn btn-action w-100">See More</a>
+            </div>
+            <div class="card-custom">
+                <h3 class="section-title">
+                    <i class="fas fa-list-alt"></i> Top 3 Reported Incidents
+                </h3>
+                <ul class="list-group mb-3">
+                    {% for incident in top_accidents %}
+                        <li class="list-group-item">
+                            <strong>{{ incident.localisation }}</strong> <br>
+                            <span class="text-muted">{{ incident.accident_datetime|date:"M d, Y H:i" }}</span><br>
+                            <span>{{ incident.description|default:"No description" }}</span>
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item">No incidents reported yet.</li>
+                    {% endfor %}
+                </ul>
+                    <a href="{% url 'incidents:incident_list' %}" class="btn btn-action w-100">See More</a>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card-custom">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="section-title mb-0">
+                        <i class="fas fa-chart-bar"></i> Risk Distribution
+                    </h3>
+                    <div style="min-width: 250px;">
+                        <select id="cityFilterSelect" class="form-select form-select-sm" style="border: 2px solid #4A90E2; border-radius: 5px; font-weight: 500; color: #1B3A57;">
+                            <option value="all">🌍 All Cities (Nationwide)</option>
+                            {% for city_name in cities_for_filter %}
+                            <option value="{{ city_name }}">📍 {{ city_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="chart-container" style="height: 280px;">
+                    <canvas id="riskPieChart"></canvas>
+                </div>
+                <div class="mt-3 text-center" style="background: linear-gradient(135deg, #E3F2FD, #BBDEFB); padding: 10px; border-radius: 8px;">
+                    <small style="color: #1B3A57; font-weight: bold;" id="riskDistributionInfo">
+                        <i class="fas fa-database"></i> Total: {{ total_all_accidents|floatformat:0 }} accidents analyzed
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Risk Analysis & Weather Row -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card-custom">
+                <h3 class="section-title">
+                    <i class="fas fa-chart-line"></i> Top 10 Cities - Risk Analysis & Accident Probability Trends
+                </h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="chart-container" style="height: 400px;">
+                            <canvas id="topCitiesChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="chart-container" style="height: 400px;">
+                            <canvas id="cityHourlyComparisonChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-3" style="background: linear-gradient(135deg, #4A90E222, #1B3A5722); padding: 12px; border-radius: 8px;">
+                    <div class="row text-center">
+                        <div class="col-md-12">
+                            <h6 style="color: #1B3A57; font-weight: bold; margin-bottom: 8px; font-size: 0.9rem;">
+                                <i class="fas fa-info-circle"></i> Top Cities Peak Hours
+                            </h6>
+                            <div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; font-size: 0.8rem;">
+                                {% if city_info_list %}
+                                    {% for city in city_info_list|slice:":5" %}
+                                        <div style="background: white; padding: 6px 10px; border-radius: 5px; border-left: 3px solid #4A90E2; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                            <strong>{{ city.name }}</strong><br>
+                                            <small style="color: #666;">Peak: {{ city.peak }}</small>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Weather Forecast Row (Same Size) -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card-custom">
+                <h3 class="section-title">
+                    <i class="fas fa-cloud-sun-rain"></i> 5-Day Weather Forecast
+                </h3>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="weatherForecastChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                {% if weather_forecast %}
+                <div class="d-flex justify-content-around mt-3" style="background: linear-gradient(135deg, #4A90E222, #1B3A5722); padding: 15px; border-radius: 8px;">
+                    {% for day in weather_forecast %}
+                    <div class="text-center">
+                        <img src="https://openweathermap.org/img/wn/{{ day.icon }}.png" alt="{{ day.weather }}" style="width: 50px;">
+                        <small class="d-block" style="font-weight: bold; color: #1B3A57;">{{ day.date|slice:":3" }}</small>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Clustered Accident Map -->
+    <div class="card-custom">
+        <h3 class="section-title">
+            <i class="fas fa-map-marked-alt"></i> Accident Probability Trends and Weather Forecast
+        </h3>
+        <div class="row">
+            <div class="col-md-12">
+                <div id="accidentMap" style="height: 600px; border-radius: 10px; border: 2px solid #4A90E2;"></div>
+                <div class="mt-3" style="background: linear-gradient(135deg, #4A90E222, #1B3A5722); padding: 10px; border-radius: 8px;">
+                    <small style="color: #1B3A57;">
+                        <i class="fas fa-lightbulb"></i> <strong>Interactive Map:</strong>
+                        Click on cluster bubbles to zoom and expand into detailed locations.
+                        Individual markers show accident count, severity, and weather forecast.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Accident Cost Prediction Card -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card-custom" style="background: linear-gradient(135deg, #1B3A57 0%, #4A90E2 100%); color: white; overflow: hidden; position: relative;">
+                <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(74,144,226,0.2); border-radius: 50%; filter: blur(60px);"></div>
+                <div style="position: absolute; bottom: -80px; left: -80px; width: 250px; height: 250px; background: rgba(74,144,226,0.15); border-radius: 50%; filter: blur(80px);"></div>
+
+                <h3 class="section-title" style="color: white; border-bottom-color: rgba(255,255,255,0.3); position: relative; z-index: 1;">
+                    <i class="fas fa-brain"></i> AI Accident Cost Predictor
+                    <span style="font-size: 0.65rem; color: rgba(255,255,255,0.85); font-weight: normal; display: block; margin-top: 5px;">
+                        <i class="fas fa-robot"></i> Powered by Advanced Machine Learning
+                    </span>
+                </h3>
+
+                <div class="row" style="position: relative; z-index: 1;">
+                    <!-- Input Section -->
+                    <div class="col-md-7">
+                        <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 15px; padding: 25px; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
+                            <h5 style="color: white; margin-bottom: 20px; font-weight: 600;">
+                                <i class="fas fa-sliders-h"></i> Configure Accident Parameters
+                            </h5>
+
+                            <!-- Severity Selector -->
+                            <div class="mb-4">
+                                <label style="color: rgba(255,255,255,0.95); font-weight: 500; margin-bottom: 10px; display: block;">
+                                    <i class="fas fa-exclamation-triangle"></i> Accident Severity
+                                </label>
+                                <div class="btn-group w-100" role="group" id="severitySelector">
+                                    <input type="radio" class="btn-check" name="severity" id="sev1" value="1" autocomplete="off">
+                                    <label class="btn btn-outline-light" for="sev1" style="border: 2px solid rgba(255,255,255,0.3);">
+                                        <i class="fas fa-check-circle"></i><br>Low
+                                    </label>
+
+                                    <input type="radio" class="btn-check" name="severity" id="sev2" value="2" autocomplete="off" checked>
+                                    <label class="btn btn-outline-light" for="sev2" style="border: 2px solid rgba(255,255,255,0.3);">
+                                        <i class="fas fa-exclamation-circle"></i><br>Medium
+                                    </label>
+
+                                    <input type="radio" class="btn-check" name="severity" id="sev3" value="3" autocomplete="off">
+                                    <label class="btn btn-outline-light" for="sev3" style="border: 2px solid rgba(255,255,255,0.3);">
+                                        <i class="fas fa-exclamation-triangle"></i><br>High
+                                    </label>
+
+                                    <input type="radio" class="btn-check" name="severity" id="sev4" value="4" autocomplete="off">
+                                    <label class="btn btn-outline-light" for="sev4" style="border: 2px solid rgba(255,255,255,0.3);">
+                                        <i class="fas fa-skull-crossbones"></i><br>Critical
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Vehicle Make -->
+                            <div class="mb-3">
+                                <label style="color: rgba(255,255,255,0.95); font-weight: 500; margin-bottom: 8px; display: block;">
+                                    <i class="fas fa-car"></i> Vehicle Make
+                                </label>
+                                <select class="form-select" id="vehicleMake" style="background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.3); font-weight: 500;">
+                                    <option value="" style="background: #1B3A57; color: white;">Select Make...</option>
+                                    {% for make in vehicle_makes %}
+                                    <option value="{{ make }}" style="background: #1B3A57; color: white;">{{ make }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!-- Vehicle Model -->
+                            <div class="mb-3">
+                                <label style="color: rgba(255,255,255,0.95); font-weight: 500; margin-bottom: 8px; display: block;">
+                                    <i class="fas fa-car-side"></i> Vehicle Model
+                                </label>
+                                <select class="form-select" id="vehicleModel" disabled style="background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.3); font-weight: 500;">
+                                    <option value="" style="background: #1B3A57; color: white;">Select Make First...</option>
+                                </select>
+                            </div>
+
+                            <!-- Vehicle Year -->
+                            <div class="mb-3">
+                                <label style="color: rgba(255,255,255,0.95); font-weight: 500; margin-bottom: 8px; display: block;">
+                                    <i class="fas fa-calendar"></i> Vehicle Year
+                                </label>
+                                <select class="form-select" id="vehicleYear" disabled style="background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.3); font-weight: 500;">
+                                    <option value="" style="background: #1B3A57; color: white;">Select Model First...</option>
+                                </select>
+                            </div>
+
+                            <!-- Damage Type -->
+                            <div class="mb-3">
+                                <label style="color: rgba(255,255,255,0.95); font-weight: 500; margin-bottom: 8px; display: block;">
+                                    <i class="fas fa-tools"></i> Damage Type
+                                </label>
+                                <select class="form-select" id="damageType" style="background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.3); font-weight: 500;">
+                                    <option value="Minor" style="background: #1B3A57; color: white;">🔧 Minor (Small dents, scratches)</option>
+                                    <option value="Moderate" selected style="background: #1B3A57; color: white;">🔨 Moderate (Broken parts, airbag)</option>
+                                    <option value="Severe" style="background: #1B3A57; color: white;">⚠️ Severe (Major structural damage)</option>
+                                    <option value="Total Loss" style="background: #1B3A57; color: white;">💥 Total Loss (Vehicle destroyed)</option>
+                                </select>
+                            </div>
+
+                            <!-- Road Type -->
+                            <div class="mb-3">
+                                <label style="color: rgba(255,255,255,0.95); font-weight: 500; margin-bottom: 8px; display: block;">
+                                    <i class="fas fa-road"></i> Road Type
+                                </label>
+                                <select class="form-select" id="roadType" style="background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.3); font-weight: 500;">
+                                    <option value="Urban" selected style="background: #1B3A57; color: white;">🏙️ Urban</option>
+                                    <option value="Highway" style="background: #1B3A57; color: white;">🛣️ Highway</option>
+                                    <option value="Residential" style="background: #1B3A57; color: white;">🏘️ Residential</option>
+                                    <option value="Rural" style="background: #1B3A57; color: white;">🌾 Rural</option>
+                                </select>
+                            </div>
+
+                            <button id="predictBtn" class="btn w-100 mt-3" style="background: linear-gradient(135deg, #4A90E2, #2E7BC4); color: white; padding: 12px; font-weight: 600; font-size: 1.1rem; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: all 0.3s; border: 2px solid rgba(255,255,255,0.3);">
+                                <i class="fas fa-calculator"></i> Calculate Cost Prediction
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Results Section -->
+                    <div class="col-md-5">
+                        <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 15px; padding: 25px; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 8px 32px rgba(0,0,0,0.1); height: 100%;">
+                            <h5 style="color: white; margin-bottom: 20px; font-weight: 600;">
+                                <i class="fas fa-calculator"></i> Predicted Cost
+                            </h5>
+
+                            <!-- Cost Display -->
+                            <div class="text-center mb-4">
+                                <div style="font-size: 0.9rem; color: rgba(255,255,255,0.8); margin-bottom: 10px;">Estimated Accident Cost</div>
+                                <div id="predictedCost" style="font-size: 3.5rem; font-weight: 800; color: white; text-shadow: 0 4px 20px rgba(0,0,0,0.3); font-family: 'Courier New', monospace; letter-spacing: 2px;">
+                                    $0
+                                </div>
+                                <div id="costRange" style="font-size: 0.85rem; color: rgba(255,255,255,0.7); margin-top: 10px;">
+                                    Range: $0 - $0
+                                </div>
+                            </div>
+
+                            <!-- Visual Gauge -->
+                            <div class="mb-4">
+                                <div style="position: relative; height: 30px; background: rgba(0,0,0,0.2); border-radius: 15px; overflow: hidden; border: 2px solid rgba(255,255,255,0.2);">
+                                    <div id="costGauge" style="height: 100%; width: 0%; background: linear-gradient(90deg, #4A90E2, #F59E0B, #EF4444); transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 15px; box-shadow: 0 0 20px rgba(74,144,226,0.5);"></div>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: rgba(255,255,255,0.7); margin-top: 5px;">
+                                    <span>💚 Low</span>
+                                    <span>⚠️ Medium</span>
+                                    <span>🔴 High</span>
+                                </div>
+                            </div>
+
+                            <!-- Confidence Indicator -->
+                            <div class="mb-3">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                                    <span style="color: rgba(255,255,255,0.9); font-size: 0.9rem;">
+                                        <i class="fas fa-chart-line"></i> Confidence Level
+                                    </span>
+                                    <span id="confidenceValue" style="color: white; font-weight: 600;">85%</span>
+                                </div>
+                                <div style="height: 8px; background: rgba(0,0,0,0.2); border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+                                    <div id="confidenceBar" style="height: 100%; width: 85%; background: linear-gradient(90deg, #4A90E2, #2E7BC4); border-radius: 10px; transition: width 0.5s;"></div>
+                                </div>
+                            </div>
+
+                            <!-- Cost Breakdown -->
+                            <div style="background: rgba(0,0,0,0.15); padding: 15px; border-radius: 10px; margin-top: 15px;">
+                                <div style="font-size: 0.85rem; color: rgba(255,255,255,0.8); margin-bottom: 10px; font-weight: 600;">
+                                    <i class="fas fa-list-ul"></i> Cost Breakdown
+                                </div>
+                                <div id="costBreakdown" style="font-size: 0.8rem; color: rgba(255,255,255,0.9); line-height: 1.8;">
+                                    <div style="display: flex; justify-content: space-between; padding: 3px 0;">
+                                        <span>🚗 Repair Cost:</span>
+                                        <span id="repairCost">$0</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; padding: 3px 0;">
+                                        <span>🏥 Medical Cost:</span>
+                                        <span id="medicalCost">$0</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; padding: 3px 0;">
+                                        <span>📋 Other Costs:</span>
+                                        <span id="otherCosts">$0</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; padding: 3px 0; margin-top: 5px; padding-top: 5px; border-top: 1px solid rgba(255,255,255,0.2);">
+                                        <span>💰 Vehicle Value:</span>
+                                        <span id="vehicleValue">$0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Quick Actions (Full Width) -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card-custom">
+                <h3 class="section-title">
+                    <i class="fas fa-tachometer-alt"></i> Admin Quick Actions
+                </h3>
+                <div class="quick-links" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px;">
+                    <a href="{% url 'admin_clients_list' %}" class="quick-link">
+                        <i class="fas fa-users"></i>
+                        <div>Manage Users</div>
+                    </a>
+                    <a href="{% url 'incidents:accident_list' %}" class="quick-link">
+                        <i class="fas fa-car-crash"></i>
+                        <div>Accident Reports</div>
+                    </a>
+                    <a href="{% url 'incidents:incident_list' %}" class="quick-link">
+                        <i class="fas fa-list-alt"></i>
+                        <div>Incident List</div>
+                    </a>
+                    <div id="exportDataBtn" class="quick-link" onclick="exportPredictionsReport()" style="cursor: pointer; opacity: 0.5; position: relative;">
+                        <i class="fas fa-download"></i>
+                        <div>Export Data</div>
+                        <span id="predictionCountBadge" style="position: absolute; top: 8px; right: 8px; background: #10b981; color: white; border-radius: 50%; width: 22px; height: 22px; display: none; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold;"></span>
+                    </div>
+                    <div class="quick-link" onclick="openClientSupport()" style="cursor: pointer; position: relative;">
+                        <i class="fas fa-comments"></i>
+                        <div>Client Support</div>
+                        <span id="messageNotificationBadge" style="position: absolute; top: 8px; right: 8px; background: #ef4444; color: white; border-radius: 50%; width: 24px; height: 24px; display: none; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; animation: pulse 2s infinite;">3</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Footer -->
+<!-- Accident Report Modal -->
+<div class="modal fade" id="accidentReportModal" tabindex="-1" aria-labelledby="accidentReportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form method="post" action="{% url 'incidents:add_user_accident_report' %}">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="accidentReportModalLabel"><i class="fas fa-car-crash"></i> Report Accident</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        {% comment %} Render the UserAccidentReportForm fields dynamically {% endcomment %}
+                        {% load crispy_forms_tags %}
+                        {{ form|crispy }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-action">Submit Report</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<footer class="bg-dark text-white text-center py-4 mt-5">
+    <div class="container">
+        <p>&copy; 2025 SafeSpot. 
+            {% if user.role == 'admin' %}
+            System Administration Portal
+            {% else %}
+            Stay safe, stay informed.
+            {% endif %}
+        </p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+{% if user.role == 'admin' %}
+<!-- Chart.js for Admin Charts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<!-- Leaflet for Map -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- Leaflet MarkerCluster Plugin -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+<style>
+/* Custom cluster styling with theme colors */
+.marker-cluster-small {
+    background: linear-gradient(135deg, rgba(74, 144, 226, 0.6), rgba(27, 58, 87, 0.6));
+    border: 3px solid rgba(74, 144, 226, 0.9);
+}
+
+.marker-cluster-small div {
+    background: linear-gradient(135deg, rgba(74, 144, 226, 0.8), rgba(27, 58, 87, 0.8));
+    color: white;
+    font-weight: bold;
+}
+
+.marker-cluster-medium {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.6), rgba(220, 100, 0, 0.6));
+    border: 3px solid rgba(245, 158, 11, 0.9);
+}
+
+.marker-cluster-medium div {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.8), rgba(220, 100, 0, 0.8));
+    color: white;
+    font-weight: bold;
+}
+
+.marker-cluster-large {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.6), rgba(185, 28, 28, 0.6));
+    border: 3px solid rgba(239, 68, 68, 0.9);
+}
+
+.marker-cluster-large div {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.8), rgba(185, 28, 28, 0.8));
+    color: white;
+    font-weight: bold;
+}
+
+/* Pulse animation for clusters */
+.marker-cluster {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(74, 144, 226, 0.7);
+    }
+    50% {
+        box-shadow: 0 0 0 10px rgba(74, 144, 226, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(74, 144, 226, 0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes typing {
+    0%, 60%, 100% {
+        transform: translateY(0);
+        opacity: 0.7;
+    }
+    30% {
+        transform: translateY(-10px);
+        opacity: 1;
+    }
+}
+
+/* Custom marker styling */
+.accident-marker {
+    background-color: white;
+    border-radius: 50%;
+    border: 2px solid #1B3A57;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #1B3A57;
+    font-size: 11px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+}
+
+.severity-1 { border-color: #10b981; color: #10b981; }
+.severity-2 { border-color: #f59e0b; color: #f59e0b; }
+.severity-3 { border-color: #ef4444; color: #ef4444; }
+.severity-4 { border-color: #7c3aed; color: #7c3aed; }
+</style>
+
+<script>
+// Risk Distribution Horizontal Bar Chart - Overall USA Data
+let riskDistributionChart = null;
+const riskPieCanvas = document.getElementById('riskPieChart');
+if (riskPieCanvas) {
+    const ctx = riskPieCanvas.getContext('2d');
+    const riskValues = {{ risk_values|safe }};
+    const riskCounts = {{ risk_counts|safe }};
+    const riskLabels = {{ risk_labels|safe }};
+
+    riskDistributionChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: riskLabels,
+            datasets: [{
+                data: riskValues,
+                backgroundColor: [
+                    '#E3F2FD', // Low
+                    '#90CAF9', // Medium
+                    '#42A5F5', // High
+                    '#1E3A8A'  // Critical
+                ],
+                borderColor: [
+                    '#BBDEFB',
+                    '#64B5F6',
+                    '#2196F3',
+                    '#1565C0'
+                ],
+                borderWidth: 2,
+                borderRadius: 8
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Nationwide Accident Distribution',
+                    font: {
+                        size: 13,
+                        weight: 'bold',
+                        family: "'Segoe UI', Arial, sans-serif"
+                    },
+                    color: '#1B3A57',
+                    padding: {
+                        top: 5,
+                        bottom: 15
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(27, 58, 87, 0.95)',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    padding: 12,
+                    displayColors: true,
+                    callbacks: {
+                        label: function(context) {
+                            const index = context.dataIndex;
+                            const count = riskCounts[index];
+                            const percent = context.parsed.x.toFixed(1);
+                            return [
+                                'Percentage: ' + percent + '%',
+                                'Count: ' + count.toLocaleString() + ' accidents'
+                            ];
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    max: 100,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return value + '%';
+                        },
+                        font: {
+                            size: 10
+                        }
+                    }
+                },
+                y: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        font: {
+                            size: 11,
+                            weight: 'bold'
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Add event listener for city filter
+const cityFilterSelect = document.getElementById('cityFilterSelect');
+if (cityFilterSelect) {
+    cityFilterSelect.addEventListener('change', function() {
+        const selectedCity = this.value;
+
+        if (selectedCity === 'all') {
+            // Reload page to show nationwide data
+            window.location.href = '/dashboard/';
+        } else {
+            // Fetch city-specific data
+            fetch(`/dashboard/api/risk-distribution/${encodeURIComponent(selectedCity)}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && riskDistributionChart) {
+                        // Update chart data
+                        riskDistributionChart.data.datasets[0].data = data.risk_values;
+                        riskDistributionChart.options.plugins.title.text = `${selectedCity} - Accident Distribution`;
+                        riskDistributionChart.update();
+
+                        // Update info text
+                        document.getElementById('riskDistributionInfo').innerHTML = `
+                            <i class="fas fa-map-marker-alt"></i> ${selectedCity}: ${data.total_accidents.toLocaleString()} accidents analyzed
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching city risk data:', error);
+                });
+        }
+    });
+}
+
+// Top Cities Risk Analysis Chart - Horizontal Bar with Dual Axis
+const topCitiesCanvas = document.getElementById('topCitiesChart');
+if (topCitiesCanvas) {
+    const ctx = topCitiesCanvas.getContext('2d');
+    const cityNames = {{ top_city_names|safe }};
+    const accidentCounts = {{ top_accident_counts|safe }};
+    const costMillions = {{ top_costs_millions|safe }};
+
+    // Create gradients with blue theme
+    const gradient1 = ctx.createLinearGradient(0, 0, 400, 0);
+    gradient1.addColorStop(0, '#1E3A8A');
+    gradient1.addColorStop(1, '#42A5F5');
+
+    const gradient2 = ctx.createLinearGradient(0, 0, 400, 0);
+    gradient2.addColorStop(0, '#90CAF9');
+    gradient2.addColorStop(1, '#E3F2FD');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: cityNames,
+            datasets: [
+                {
+                    label: 'Total Accidents',
+                    data: accidentCounts,
+                    backgroundColor: gradient1,
+                    borderColor: '#1565C0',
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    yAxisID: 'y'
+                },
+                {
+                    label: 'Cost (Millions $)',
+                    data: costMillions,
+                    backgroundColor: gradient2,
+                    borderColor: '#64B5F6',
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    yAxisID: 'y1'
+                }
+            ]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        padding: 15,
+                        font: {
+                            size: 11,
+                            weight: 'bold'
+                        },
+                        usePointStyle: true
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Top 10 Cities by Accidents & Financial Impact',
+                    font: {
+                        size: 14,
+                        weight: 'bold'
+                    },
+                    padding: {
+                        bottom: 15
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.85)',
+                    padding: 12,
+                    titleFont: {
+                        size: 13,
+                        weight: 'bold'
+                    },
+                    bodyFont: {
+                        size: 12
+                    },
+                    callbacks: {
+                        title: function(context) {
+                            return context[0].label;
+                        },
+                        label: function(context) {
+                            if (context.dataset.label === 'Total Accidents') {
+                                return '📊 Accidents: ' + context.parsed.x.toLocaleString();
+                            } else {
+                                return '💰 Cost: $' + context.parsed.x.toFixed(2) + ' Million';
+                            }
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    type: 'linear',
+                    display: true,
+                    position: 'bottom',
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
+                    ticks: {
+                        font: {
+                            size: 10
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Number of Accidents',
+                        font: {
+                            size: 11,
+                            weight: 'bold'
+                        }
+                    }
+                },
+                y: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        font: {
+                            size: 10
+                        },
+                        autoSkip: false
+                    }
+                },
+                y1: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    grid: {
+                        drawOnChartArea: false
+                    },
+                    ticks: {
+                        font: {
+                            size: 10
+                        },
+                        callback: function(value) {
+                            return '$' + value + 'M';
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Cost (Millions $)',
+                        font: {
+                            size: 11,
+                            weight: 'bold'
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// City Hourly Comparison Chart - Multi-line chart
+const comparisonCanvas = document.getElementById('cityHourlyComparisonChart');
+if (comparisonCanvas) {
+    const ctx = comparisonCanvas.getContext('2d');
+    const cityNames = {{ top_city_names|safe }};
+    const hourlyDistributions = {{ top_hourly_distributions|safe }};
+    const hours = {{ analysis_hours|safe }};
+
+    // Color palette for cities - Distinct, vibrant colors for better visibility
+    const cityColors = [
+        { border: '#1E3A8A', bg: 'rgba(30, 58, 138, 0.08)' },      // Dark blue
+        { border: '#DC2626', bg: 'rgba(220, 38, 38, 0.08)' },      // Red
+        { border: '#059669', bg: 'rgba(5, 150, 105, 0.08)' },      // Green
+        { border: '#D97706', bg: 'rgba(217, 119, 6, 0.08)' },      // Orange
+        { border: '#7C3AED', bg: 'rgba(124, 58, 237, 0.08)' }      // Purple
+    ];
+
+    // Create datasets for top 5 cities only
+    const datasets = cityNames.slice(0, 5).map((city, index) => {
+        return {
+            label: city,
+            data: hourlyDistributions[index],
+            borderColor: cityColors[index].border,
+            backgroundColor: cityColors[index].bg,
+            borderWidth: 2.5,
+            fill: true,
+            tension: 0.3,
+            pointRadius: 3,
+            pointHoverRadius: 7,
+            pointBackgroundColor: cityColors[index].border,
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointHoverBorderWidth: 3
+        };
+    });
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: hours,
+            datasets: datasets
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom',
+                    labels: {
+                        padding: 12,
+                        font: {
+                            size: 11,
+                            weight: '600'
+                        },
+                        usePointStyle: true,
+                        pointStyle: 'circle',
+                        boxWidth: 8,
+                        boxHeight: 8
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Hourly Accident Patterns - Top 5 Cities',
+                    font: {
+                        size: 15,
+                        weight: 'bold'
+                    },
+                    padding: {
+                        bottom: 20
+                    },
+                    color: '#1B3A57'
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(27, 58, 87, 0.95)',
+                    padding: 14,
+                    titleFont: {
+                        size: 13,
+                        weight: 'bold'
+                    },
+                    bodyFont: {
+                        size: 12
+                    },
+                    bodySpacing: 6,
+                    borderColor: 'rgba(74, 144, 226, 0.5)',
+                    borderWidth: 1,
+                    displayColors: true,
+                    callbacks: {
+                        title: function(context) {
+                            const hour = context[0].label;
+                            return '🕐 ' + hour + ':00';
+                        },
+                        label: function(context) {
+                            const cityName = context.dataset.label;
+                            const accidents = context.parsed.y;
+                            return cityName + ': ' + accidents.toLocaleString() + ' accidents';
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.06)',
+                        lineWidth: 1
+                    },
+                    ticks: {
+                        font: {
+                            size: 11
+                        },
+                        color: '#1B3A57',
+                        padding: 8
+                    },
+                    title: {
+                        display: true,
+                        text: 'Number of Accidents',
+                        font: {
+                            size: 12,
+                            weight: 'bold'
+                        },
+                        color: '#1B3A57',
+                        padding: {
+                            top: 10,
+                            bottom: 10
+                        }
+                    }
+                },
+                x: {
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.04)',
+                        lineWidth: 1
+                    },
+                    ticks: {
+                        font: {
+                            size: 10
+                        },
+                        color: '#1B3A57',
+                        maxRotation: 0,
+                        minRotation: 0,
+                        autoSkip: true,
+                        maxTicksLimit: 12
+                    },
+                    title: {
+                        display: true,
+                        text: 'Hour of Day',
+                        font: {
+                            size: 12,
+                            weight: 'bold'
+                        },
+                        color: '#1B3A57',
+                        padding: {
+                            top: 10,
+                            bottom: 5
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// 5-Day Weather Forecast - Using context data
+const weatherCanvas = document.getElementById('weatherForecastChart');
+let weatherForecastChart = null;
+
+function createWeatherForecastChart(forecastData, cityName) {
+    if (!weatherCanvas) return;
+
+    const ctx = weatherCanvas.getContext('2d');
+
+    const dates = forecastData.map(day => day.date);
+    const tempMins = forecastData.map(day => day.temp_min);
+    const tempMaxs = forecastData.map(day => day.temp_max);
+
+    // Create gradient with blue theme
+    const gradient1 = ctx.createLinearGradient(0, 0, 0, 300);
+    gradient1.addColorStop(0, 'rgba(66, 165, 245, 0.8)');
+    gradient1.addColorStop(1, 'rgba(66, 165, 245, 0.1)');
+
+    const gradient2 = ctx.createLinearGradient(0, 0, 0, 300);
+    gradient2.addColorStop(0, 'rgba(30, 58, 138, 0.8)');
+    gradient2.addColorStop(1, 'rgba(30, 58, 138, 0.1)');
+
+    // Destroy existing chart
+    if (weatherForecastChart) {
+        weatherForecastChart.destroy();
+    }
+
+    weatherForecastChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [
+                {
+                    label: 'Max Temp (°C)',
+                    data: tempMaxs,
+                    borderColor: '#42A5F5',
+                    backgroundColor: gradient1,
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#42A5F5',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6,
+                    pointHoverRadius: 8
+                },
+                {
+                    label: 'Min Temp (°C)',
+                    data: tempMins,
+                    borderColor: '#1E3A8A',
+                    backgroundColor: gradient2,
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#1E3A8A',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    borderDash: [5, 5]
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        color: '#333',
+                        font: {
+                            size: 12,
+                            weight: 'bold'
+                        },
+                        usePointStyle: true,
+                        padding: 15
+                    }
+                },
+                title: {
+                    display: true,
+                    text: '5-Day Forecast for ' + cityName,
+                    font: {
+                        size: 14,
+                        weight: 'bold'
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    padding: 12,
+                    displayColors: true,
+                    callbacks: {
+                        afterLabel: function(context) {
+                            const idx = context.dataIndex;
+                            const weather = forecastData[idx].weather;
+                            return `Weather: ${weather}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return value + '°C';
+                        }
+                    }
+                },
+                x: {
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Initialize chart with default data
+if (weatherCanvas) {
+    {% if weather_forecast %}
+    const initialForecastData = {{ weather_forecast|safe }};
+    const initialCity = '{{ weather_city }}';
+    createWeatherForecastChart(initialForecastData, initialCity);
+    {% endif %}
+}
+
+// Interactive Clustered Accident Map with Bubble Animation
+const mapContainer = document.getElementById('accidentMap');
+if (mapContainer) {
+    // Initialize map centered on USA
+    const map = L.map('accidentMap').setView([39.8283, -98.5795], 4);
+
+    // Use a more vibrant map tile style
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+        maxZoom: 20,
+        subdomains: 'abcd'
+    }).addTo(map);
+
+    // Load accident data from context
+    const mapData = {{ map_data|safe }};
+
+    console.log(`Loading ${mapData.length} accident locations...`);
+
+    // Create marker cluster group with custom options
+    const markers = L.markerClusterGroup({
+        showCoverageOnHover: false,
+        zoomToBoundsOnClick: true,
+        spiderfyOnMaxZoom: true,
+        removeOutsideVisibleBounds: true,
+        animate: true,
+        animateAddingMarkers: true,
+        maxClusterRadius: 60,
+        iconCreateFunction: function(cluster) {
+            const childCount = cluster.getChildCount();
+            const markers = cluster.getAllChildMarkers();
+
+            // Calculate total accidents in cluster
+            let totalAccidents = 0;
+            markers.forEach(marker => {
+                totalAccidents += marker.options.accidents || 1;
+            });
+
+            // Determine cluster size class based on accident count
+            let sizeClass = 'marker-cluster-small';
+            if (totalAccidents > 500) {
+                sizeClass = 'marker-cluster-large';
+            } else if (totalAccidents > 100) {
+                sizeClass = 'marker-cluster-medium';
+            }
+
+            return L.divIcon({
+                html: `<div><span>${totalAccidents}</span></div>`,
+                className: 'marker-cluster ' + sizeClass,
+                iconSize: L.point(50, 50)
+            });
+        }
+    });
+
+    // Severity color mapping
+    const severityColors = {
+        1: '#10b981', // Green - Low
+        2: '#f59e0b', // Orange - Medium
+        3: '#ef4444', // Red - High
+        4: '#7c3aed'  // Purple - Critical
+    };
+
+    const severityLabels = {
+        1: 'Low',
+        2: 'Medium',
+        3: 'High',
+        4: 'Critical'
+    };
+
+    const monthNames = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+    // Enhanced function to update ALL weather displays
+    function updateWeatherForCity(cityName) {
+        // Extract city name (remove state)
+        const cityOnly = cityName.split(',')[0].trim();
+
+        // Show loading state in stat box
+        const weatherStatBox = document.getElementById('weatherStatBox');
+        if (weatherStatBox) {
+            weatherStatBox.innerHTML = `
+                <div class="stat-icon">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                <div class="stat-number">Loading...</div>
+                <div class="stat-label">Fetching Weather</div>
+                <small style="color: rgba(255,255,255,0.8); font-size: 0.75rem; display: block; margin-top: 5px;">
+                    <i class="fas fa-map-marker-alt"></i> ${cityOnly}
+                </small>
+            `;
+        }
+
+        // Fetch weather using the API endpoint
+        fetch(`/dashboard/api/weather/${encodeURIComponent(cityOnly)}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.current_weather && data.forecast) {
+                    const weather = data.current_weather;
+                    const forecast = data.forecast;
+
+                    // Update weather stat box
+                    if (weatherStatBox) {
+                        weatherStatBox.innerHTML = `
+                            <div class="stat-icon">
+                                <img src="https://openweathermap.org/img/wn/${weather.icon}@2x.png"
+                                     alt="${weather.weather}"
+                                     style="width: 60px; height: 60px; filter: brightness(0) invert(1);">
+                            </div>
+                            <div class="stat-number">${weather.temp}°C</div>
+                            <div class="stat-label">${weather.weather}</div>
+                            <small style="color: rgba(255,255,255,0.8); font-size: 0.75rem; display: block; margin-top: 5px;">
+                                <i class="fas fa-map-marker-alt"></i> ${data.city}
+                            </small>
+                        `;
+                    }
+
+                    // Update risk score box
+                    const riskScoreBox = document.getElementById('riskScoreBox');
+                    const riskScoreValue = document.getElementById('riskScoreValue');
+                    if (riskScoreValue && weather.risk_score !== undefined) {
+                        riskScoreValue.textContent = weather.risk_score + '%';
+
+                        // Remove all risk level classes
+                        riskScoreBox.classList.remove('risk-low', 'risk-medium', 'risk-high', 'risk-critical');
+
+                        // Determine risk level, icon, and description
+                        let riskClass, riskIcon, riskDescription;
+                        if (weather.risk_score < 25) {
+                            riskClass = 'risk-low';
+                            riskIcon = 'fa-check-circle';
+                            riskDescription = 'Safe';
+                        } else if (weather.risk_score < 50) {
+                            riskClass = 'risk-medium';
+                            riskIcon = 'fa-exclamation-circle';
+                            riskDescription = 'Moderate';
+                        } else if (weather.risk_score < 75) {
+                            riskClass = 'risk-high';
+                            riskIcon = 'fa-exclamation-triangle';
+                            riskDescription = 'High';
+                        } else {
+                            riskClass = 'risk-critical';
+                            riskIcon = 'fa-skull-crossbones';
+                            riskDescription = 'Critical';
+                        }
+
+                        // Add appropriate risk level class
+                        riskScoreBox.classList.add(riskClass);
+
+                        // Update the risk box content with new icon and description
+                        riskScoreBox.innerHTML = `
+                            <div class="stat-icon">
+                                <i class="fas ${riskIcon}"></i>
+                            </div>
+                            <div class="stat-number">${weather.risk_score}%</div>
+                            <div class="stat-label">Accident Risk</div>
+                            <small style="color: rgba(255,255,255,0.8); font-size: 0.75rem; display: block; margin-top: 5px;">
+                                <i class="fas fa-cloud"></i> ${riskDescription} - Weather-based
+                            </small>
+                        `;
+
+                        // Add animation to highlight the change
+                        riskScoreBox.style.animation = 'pulse 1s ease-in-out';
+                        setTimeout(() => {
+                            riskScoreBox.style.animation = '';
+                        }, 1000);
+                    }
+
+                    // Update weather forecast chart
+                    if (forecast && forecast.length > 0) {
+                        createWeatherForecastChart(forecast, data.city);
+
+                        // Update weather icons below the chart
+                        const weatherIconsContainer = document.querySelector('.d-flex.justify-content-around.mt-3');
+                        if (weatherIconsContainer) {
+                            let iconsHTML = '';
+                            forecast.forEach(day => {
+                                iconsHTML += `
+                                    <div class="text-center">
+                                        <img src="https://openweathermap.org/img/wn/${day.icon}.png" alt="${day.weather}" style="width: 50px;">
+                                        <small class="d-block" style="font-weight: bold; color: #1B3A57;">${day.date.substring(0, 3)}</small>
+                                    </div>
+                                `;
+                            });
+                            weatherIconsContainer.innerHTML = iconsHTML;
+                        }
+                    }
+
+                    // Scroll to weather section smoothly
+                    const weatherSection = document.getElementById('weatherStatBox');
+                    if (weatherSection) {
+                        weatherSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        // Add a highlight effect
+                        weatherStatBox.style.animation = 'pulse 1s ease-in-out';
+                        setTimeout(() => {
+                            weatherStatBox.style.animation = '';
+                        }, 1000);
+                    }
+                } else {
+                    if (weatherStatBox) {
+                        weatherStatBox.innerHTML = `
+                            <div class="stat-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="stat-number">--</div>
+                            <div class="stat-label">No Data</div>
+                            <small style="color: rgba(255,255,255,0.8);">${cityOnly}</small>
+                        `;
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching weather:', error);
+                if (weatherStatBox) {
+                    weatherStatBox.innerHTML = `
+                        <div class="stat-icon">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <div class="stat-number">Error</div>
+                        <div class="stat-label">Connection Failed</div>
+                    `;
+                }
+            });
+    }
+
+    // Add markers for each accident location
+    mapData.forEach(location => {
+        const severity = location.severity || 2;
+        const color = severityColors[severity];
+        const accidents = location.accidents || 1;
+        const monthName = location.month ? monthNames[location.month] : 'Unknown';
+
+        // Create custom div icon for individual markers
+        const customIcon = L.divIcon({
+            className: 'accident-marker severity-' + severity,
+            html: `<div style="border-color: ${color}; color: ${color};">${accidents}</div>`,
+            iconSize: [30, 30],
+            iconAnchor: [15, 15],
+            popupAnchor: [0, -15]
+        });
+
+        // Create marker with custom icon
+        const marker = L.marker([location.lat, location.lng], {
+            icon: customIcon,
+            accidents: accidents
+        });
+
+        // Create popup content
+        const popupContent = `
+            <div style="min-width: 220px; font-family: 'Segoe UI', Arial, sans-serif;">
+                <h6 style="margin: 0 0 10px 0; color: ${color}; font-weight: bold; font-size: 1.1rem; border-bottom: 2px solid ${color}; padding-bottom: 5px;">
+                    <i class="fas fa-map-marker-alt"></i> ${location.city}, ${location.state}
+                </h6>
+                <div style="font-size: 0.9rem; line-height: 1.6;">
+                    <div style="background: linear-gradient(135deg, ${color}22, ${color}11); padding: 8px; border-radius: 5px; margin-bottom: 8px;">
+                        <strong style="font-size: 1.3rem; color: ${color};">${accidents}</strong>
+                        <span style="color: #666;"> Accident${accidents > 1 ? 's' : ''}</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: auto 1fr; gap: 8px;">
+                        <strong><i class="fas fa-exclamation-triangle" style="color: ${color};"></i> Severity:</strong>
+                        <span style="color: ${color}; font-weight: bold;">${severityLabels[severity]}</span>
+
+                        <strong><i class="fas fa-calendar" style="color: #4A90E2;"></i> Month:</strong>
+                        <span>${monthName}</span>
+
+                        <strong><i class="fas fa-map-pin" style="color: #1B3A57;"></i> Location:</strong>
+                        <span>${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}</span>
+                    </div>
+                </div>
+                <div class="mt-2 p-2" style="background: linear-gradient(135deg, rgba(74,144,226,0.1), rgba(27,58,87,0.1)); border-radius: 5px; text-align: center; border: 1px solid rgba(74,144,226,0.3);">
+                    <small style="color: #1B3A57;"><i class="fas fa-cloud-sun"></i> Weather loaded automatically</small>
+                </div>
+            </div>
+        `;
+
+        marker.bindPopup(popupContent);
+
+        // Automatically update weather when marker is clicked
+        marker.on('click', function() {
+            updateWeatherForCity(location.city);
+        });
+
+        // Add marker to cluster group
+        markers.addLayer(marker);
+    });
+
+    // Add the marker cluster group to the map
+    map.addLayer(markers);
+
+    // Add click handler for anywhere on the map to get weather
+    map.on('click', function(e) {
+        const lat = e.latlng.lat;
+        const lng = e.latlng.lng;
+
+        // Use OpenWeatherMap reverse geocoding to get city name from coordinates
+        const apiKey = '{{ openweather_api_key }}';
+        const reverseGeoUrl = `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lng}&limit=1&appid=${apiKey}`;
+
+        fetch(reverseGeoUrl)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.length > 0) {
+                    const cityName = data[0].name;
+                    const stateName = data[0].state || data[0].country;
+
+                    // Show a temporary marker at clicked location
+                    const tempMarker = L.marker([lat, lng], {
+                        icon: L.divIcon({
+                            className: 'temp-weather-marker',
+                            html: `<div style="background: linear-gradient(135deg, #4A90E2, #1B3A57); color: white; padding: 8px 12px; border-radius: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); white-space: nowrap; font-weight: bold; font-size: 0.85rem;"><i class="fas fa-cloud-sun"></i> Loading weather...</div>`,
+                            iconSize: [150, 40],
+                            iconAnchor: [75, 40]
+                        })
+                    }).addTo(map);
+
+                    // Update weather for this location
+                    updateWeatherForCity(cityName);
+
+                    // Remove temporary marker after 3 seconds
+                    setTimeout(() => {
+                        map.removeLayer(tempMarker);
+                    }, 3000);
+
+                    // Show popup with location info
+                    const popup = L.popup()
+                        .setLatLng([lat, lng])
+                        .setContent(`
+                            <div style="text-align: center; min-width: 180px;">
+                                <h6 style="margin: 0 0 8px 0; color: #1B3A57; font-weight: bold;">
+                                    <i class="fas fa-location-arrow"></i> ${cityName}
+                                </h6>
+                                <p style="margin: 0 0 5px 0; color: #666; font-size: 0.85rem;">
+                                    ${stateName}
+                                </p>
+                                <small style="color: #999; font-size: 0.75rem;">
+                                    ${lat.toFixed(4)}, ${lng.toFixed(4)}
+                                </small>
+                                <div class="mt-2 p-2" style="background: linear-gradient(135deg, rgba(74,144,226,0.1), rgba(27,58,87,0.1)); border-radius: 5px;">
+                                    <small style="color: #1B3A57;"><i class="fas fa-cloud-sun"></i> Weather loading...</small>
+                                </div>
+                            </div>
+                        `)
+                        .openOn(map);
+                } else {
+                    // If no location found, show error
+                    L.popup()
+                        .setLatLng([lat, lng])
+                        .setContent(`
+                            <div style="text-align: center;">
+                                <i class="fas fa-exclamation-circle" style="color: #ef4444; font-size: 1.5rem;"></i>
+                                <p style="margin: 5px 0 0 0; color: #666;">
+                                    Unable to find location
+                                </p>
+                            </div>
+                        `)
+                        .openOn(map);
+                }
+            })
+            .catch(error => {
+                console.error('Error with reverse geocoding:', error);
+                L.popup()
+                    .setLatLng([lat, lng])
+                    .setContent(`
+                        <div style="text-align: center;">
+                            <i class="fas fa-exclamation-triangle" style="color: #f59e0b; font-size: 1.5rem;"></i>
+                            <p style="margin: 5px 0 0 0; color: #666;">
+                                Error loading location
+                            </p>
+                        </div>
+                    `)
+                    .openOn(map);
+            });
+    });
+
+    // Add custom legend
+    const legend = L.control({position: 'bottomright'});
+    legend.onAdd = function(map) {
+        const div = L.DomUtil.create('div', 'info legend');
+        div.innerHTML = `
+            <div style="background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); border: 2px solid #4A90E2;">
+                <h6 style="margin: 0 0 10px 0; font-weight: bold; color: #1B3A57; border-bottom: 2px solid #4A90E2; padding-bottom: 5px;">
+                    <i class="fas fa-info-circle"></i> Accident Severity
+                </h6>
+                <div style="line-height: 2;">
+                    <div><span style="color: #7c3aed; font-size: 1.2rem;">&#9679;</span> <strong>Critical</strong> - Severity 4</div>
+                    <div><span style="color: #ef4444; font-size: 1.2rem;">&#9679;</span> <strong>High</strong> - Severity 3</div>
+                    <div><span style="color: #f59e0b; font-size: 1.2rem;">&#9679;</span> <strong>Medium</strong> - Severity 2</div>
+                    <div><span style="color: #10b981; font-size: 1.2rem;">&#9679;</span> <strong>Low</strong> - Severity 1</div>
+                </div>
+                <hr style="margin: 10px 0; border-color: #e0e0e0;">
+                <small style="color: #666;">
+                    <i class="fas fa-hand-pointer"></i> Click bubbles to zoom in<br>
+                    <i class="fas fa-search-plus"></i> Zoom to see more details<br>
+                    <i class="fas fa-cloud-sun"></i> Click anywhere for weather
+                </small>
+            </div>
+        `;
+        return div;
+    };
+    legend.addTo(map);
+
+    // Add info panel
+    const info = L.control({position: 'topleft'});
+    info.onAdd = function(map) {
+        const div = L.DomUtil.create('div', 'info');
+        div.innerHTML = `
+            <div style="background: linear-gradient(135deg, #4A90E2, #1B3A57); color: white; padding: 12px 15px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); font-weight: bold;">
+                <i class="fas fa-map-marked-alt"></i> <span id="mapStats">${mapData.length.toLocaleString()}</span> Accident Locations
+            </div>
+        `;
+        return div;
+    };
+    info.addTo(map);
+
+    // Update stats on zoom
+    map.on('zoomend', function() {
+        const zoom = map.getZoom();
+        const bounds = map.getBounds();
+        let visibleMarkers = 0;
+
+        markers.eachLayer(function(layer) {
+            if (bounds.contains(layer.getLatLng())) {
+                visibleMarkers++;
+            }
+        });
+
+        const statsEl = document.getElementById('mapStats');
+        if (statsEl) {
+            statsEl.textContent = `${visibleMarkers.toLocaleString()} / ${mapData.length.toLocaleString()}`;
+        }
+    });
+
+    // Make updateWeatherForCity globally available
+    window.updateWeatherForCity = updateWeatherForCity;
+
+    console.log('Map initialized with clustering successfully!');
+}
+
+// AI Accident Cost Predictor JavaScript
+const vehicleDatabase = {{ vehicle_data|safe }};
+
+// Vehicle selection cascade
+document.getElementById('vehicleMake').addEventListener('change', function() {
+    const make = this.value;
+    const modelSelect = document.getElementById('vehicleModel');
+    const yearSelect = document.getElementById('vehicleYear');
+
+    if (make && vehicleDatabase[make]) {
+        // Enable model select and populate options
+        modelSelect.disabled = false;
+        modelSelect.innerHTML = '<option value="" style="background: #1B3A57; color: white;">Select Model...</option>';
+
+        vehicleDatabase[make].forEach(vehicle => {
+            const option = document.createElement('option');
+            option.value = vehicle.model;
+            option.textContent = vehicle.model + ' (' + vehicle.category + ')';
+            option.dataset.minYear = vehicle.min_year;
+            option.dataset.maxYear = vehicle.max_year;
+            option.style.background = '#1B3A57';
+            option.style.color = 'white';
+            modelSelect.appendChild(option);
+        });
+
+        // Reset year select
+        yearSelect.disabled = true;
+        yearSelect.innerHTML = '<option value="" style="background: #1B3A57; color: white;">Select Model First...</option>';
+    } else {
+        modelSelect.disabled = true;
+        modelSelect.innerHTML = '<option value="" style="background: #1B3A57; color: white;">Select Make First...</option>';
+        yearSelect.disabled = true;
+        yearSelect.innerHTML = '<option value="" style="background: #1B3A57; color: white;">Select Model First...</option>';
+    }
+});
+
+document.getElementById('vehicleModel').addEventListener('change', function() {
+    const selectedOption = this.options[this.selectedIndex];
+    const yearSelect = document.getElementById('vehicleYear');
+
+    if (this.value) {
+        const minYear = parseInt(selectedOption.dataset.minYear);
+        const maxYear = parseInt(selectedOption.dataset.maxYear);
+
+        yearSelect.disabled = false;
+        yearSelect.innerHTML = '<option value="" style="background: #1B3A57; color: white;">Select Year...</option>';
+
+        for (let year = maxYear; year >= minYear; year--) {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            option.style.background = '#1B3A57';
+            option.style.color = 'white';
+            yearSelect.appendChild(option);
+        }
+    } else {
+        yearSelect.disabled = true;
+        yearSelect.innerHTML = '<option value="" style="background: #1B3A57; color: white;">Select Model First...</option>';
+    }
+});
+
+// Predict button click handler
+document.getElementById('predictBtn').addEventListener('click', async function() {
+    const btn = this;
+    const vehicleMake = document.getElementById('vehicleMake').value;
+    const vehicleModel = document.getElementById('vehicleModel').value;
+    const vehicleYear = document.getElementById('vehicleYear').value;
+    const severity = document.querySelector('input[name="severity"]:checked')?.value || 2;
+    const damageType = document.getElementById('damageType').value;
+    const roadType = document.getElementById('roadType').value;
+
+    // Validation
+    if (!vehicleMake || !vehicleModel || !vehicleYear) {
+        alert('Please select vehicle make, model, and year');
+        return;
+    }
+
+    // Show loading state
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Calculating...';
+
+    try {
+        const response = await fetch('/dashboard/api/predict-cost/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                vehicle_make: vehicleMake,
+                vehicle_model: vehicleModel,
+                vehicle_year: parseInt(vehicleYear),
+                severity: parseInt(severity),
+                damage_type: damageType,
+                road_type: roadType
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            // Update cost display
+            document.getElementById('predictedCost').textContent = '$' + data.total_cost.toLocaleString();
+            document.getElementById('costRange').textContent =
+                'Range: $' + data.cost_min.toLocaleString() + ' - $' + data.cost_max.toLocaleString();
+
+            // Update gauge
+            document.getElementById('costGauge').style.width = data.gauge_percent + '%';
+
+            // Update confidence
+            document.getElementById('confidenceValue').textContent = data.confidence + '%';
+            document.getElementById('confidenceBar').style.width = data.confidence + '%';
+
+            // Update breakdown
+            document.getElementById('repairCost').textContent = '$' + data.repair_cost.toLocaleString();
+            document.getElementById('medicalCost').textContent = '$' + data.medical_cost.toLocaleString();
+            document.getElementById('otherCosts').textContent = '$' + data.other_costs.toLocaleString();
+            document.getElementById('vehicleValue').textContent = '$' + data.vehicle_value.toLocaleString();
+
+            // Add animation
+            document.getElementById('predictedCost').style.animation = 'pulse 0.5s ease-in-out';
+            setTimeout(() => {
+                document.getElementById('predictedCost').style.animation = '';
+            }, 500);
+
+            // Immediately check and enable export button
+            checkPredictionsExist();
+        } else {
+            alert('Error: ' + (data.error || 'Prediction failed'));
+        }
+    } catch (error) {
+        console.error('Prediction error:', error);
+        alert('Failed to calculate prediction. Please try again.');
+    } finally {
+        // Restore button
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-magic"></i> Calculate Cost Prediction';
+    }
+});
+
+// Check if user has predictions and enable/disable export button
+function checkPredictionsExist() {
+    fetch('/dashboard/api/check-predictions/')
+        .then(response => response.json())
+        .then(data => {
+            console.log('Predictions check:', data); // Debug log
+            const exportBtn = document.getElementById('exportDataBtn');
+            const badge = document.getElementById('predictionCountBadge');
+
+            if (exportBtn) {
+                if (data.has_predictions && data.count > 0) {
+                    // Enable button
+                    exportBtn.style.opacity = '1';
+                    exportBtn.style.cursor = 'pointer';
+                    exportBtn.style.pointerEvents = 'auto';
+                    console.log('Export button ENABLED - ' + data.count + ' predictions found');
+
+                    // Show count badge
+                    if (badge) {
+                        badge.style.display = 'flex';
+                        badge.textContent = data.count;
+                    }
+                } else {
+                    // Disable button
+                    exportBtn.style.opacity = '0.5';
+                    exportBtn.style.cursor = 'not-allowed';
+                    exportBtn.style.pointerEvents = 'none';
+                    console.log('Export button DISABLED - no predictions');
+                    if (badge) {
+                        badge.style.display = 'none';
+                    }
+                }
+            } else {
+                console.error('Export button not found!');
+            }
+        })
+        .catch(error => {
+            console.error('Error checking predictions:', error);
+        });
+}
+
+// Export Predictions Report Function
+function exportPredictionsReport() {
+    // Open report in new window
+    window.open('/dashboard/export-report/', '_blank');
+}
+
+// Check predictions on page load (for all users)
+window.addEventListener('load', () => {
+    checkPredictionsExist();
+    // Re-check every 30 seconds
+    setInterval(checkPredictionsExist, 30000);
+});
+
+// Export Dashboard Data Function (for admin)
+function exportDashboardData() {
+    const csvData = [];
+    csvData.push(['Metric', 'Value', 'Timestamp']);
+
+    // Get current stats
+    const totalUsers = document.querySelector('.admin-stats h2')?.textContent || '0';
+    const dailyPredictions = document.querySelectorAll('.admin-stats h2')[1]?.textContent || '0';
+    const accidentRisk = document.querySelectorAll('.admin-stats h2')[2]?.textContent || '0';
+    const currentTime = new Date().toISOString();
+
+    csvData.push(['Total Users', totalUsers, currentTime]);
+    csvData.push(['Daily Predictions', dailyPredictions, currentTime]);
+    csvData.push(['Accident Risk', accidentRisk, currentTime]);
+
+    // Convert to CSV string
+    const csvString = csvData.map(row => row.join(',')).join('\n');
+
+    // Create download link
+    const blob = new Blob([csvString], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `safespot_dashboard_${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+
+    // Show success message
+    const tempAlert = document.createElement('div');
+    tempAlert.style.cssText = 'position: fixed; top: 20px; right: 20px; background: linear-gradient(135deg, #059669, #10b981); color: white; padding: 20px 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 9999; animation: slideIn 0.3s ease-out;';
+    tempAlert.innerHTML = '<i class="fas fa-check-circle"></i> Data exported successfully!';
+    document.body.appendChild(tempAlert);
+
+    setTimeout(() => {
+        tempAlert.style.animation = 'slideOut 0.3s ease-in';
+        setTimeout(() => document.body.removeChild(tempAlert), 300);
+    }, 3000);
+}
+
+</script>
+{% endif %}
+
+<!-- Messaging System - Available for All Users -->
+<script>
+// Client Support Chat System with Real API
+let unreadMessages = 0;
+
+// Fetch unread count on page load
+window.addEventListener('load', () => {
+    fetchUnreadCount();
+    // Poll for new messages every 10 seconds
+    setInterval(fetchUnreadCount, 10000);
+});
+
+function fetchUnreadCount() {
+    fetch('/messages/api/unread/')
+        .then(response => response.json())
+        .then(data => {
+            unreadMessages = data.unread || 0;
+
+            // Update admin badge
+            const badgeAdmin = document.getElementById('messageNotificationBadge');
+            if (badgeAdmin) {
+                if (unreadMessages > 0) {
+                    badgeAdmin.style.display = 'flex';
+                    badgeAdmin.textContent = unreadMessages;
+                } else {
+                    badgeAdmin.style.display = 'none';
+                }
+            }
+
+            // Update user badge
+            const badgeUser = document.getElementById('messageNotificationBadgeUser');
+            if (badgeUser) {
+                if (unreadMessages > 0) {
+                    badgeUser.style.display = 'flex';
+                    badgeUser.textContent = unreadMessages;
+                } else {
+                    badgeUser.style.display = 'none';
+                }
+            }
+        })
+        .catch(error => console.error('Error fetching unread count:', error));
+}
+
+// Global variable to store selected client ID for admin
+let selectedClientId = null;
+let isAdmin = {% if user.role == 'admin' %}true{% else %}false{% endif %};
+
+function openClientSupport() {
+    // Hide notification badges and reset unread count
+    const badgeAdmin = document.getElementById('messageNotificationBadge');
+    const badgeUser = document.getElementById('messageNotificationBadgeUser');
+    if (badgeAdmin) badgeAdmin.style.display = 'none';
+    if (badgeUser) badgeUser.style.display = 'none';
+    unreadMessages = 0;
+
+    // Create modal overlay
+    const modal = document.createElement('div');
+    modal.id = 'chatModal';
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; display: flex; align-items: center; justify-content: center; animation: fadeIn 0.3s ease-out;';
+
+    // Create chat interface
+    const chatContainer = document.createElement('div');
+    chatContainer.style.cssText = 'background: white; width: 90%; max-width: 500px; height: 600px; border-radius: 20px; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,0.5); overflow: hidden;';
+
+    // Show loading state
+    chatContainer.innerHTML = `
+        <div style="background: linear-gradient(135deg, #1B3A57 0%, #4A90E2 100%); padding: 20px; color: white; display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div style="width: 50px; height: 50px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-headset" style="font-size: 1.5rem; color: #1B3A57;"></i>
+                </div>
+                <h3 style="margin: 0; font-size: 1.1rem;">SafeSpot Support</h3>
+            </div>
+            <button onclick="document.getElementById('chatModal').remove()" style="background: rgba(255,255,255,0.2); border: none; color: white; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 1.5rem;">×</button>
+        </div>
+        <div style="flex: 1; display: flex; align-items: center; justify-content: center; background: #f5f7fa;">
+            <div style="text-align: center;">
+                <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #4A90E2; margin-bottom: 10px;"></i>
+                <p style="color: #666;">Loading...</p>
+            </div>
+        </div>
+    `;
+
+    modal.appendChild(chatContainer);
+    document.body.appendChild(modal);
+
+    // Check if user is admin
+    if (isAdmin) {
+        // Show conversations list for admin
+        fetch('/messages/api/conversations/')
+            .then(response => response.json())
+            .then(data => {
+                renderConversationsList(data.conversations || []);
+            })
+            .catch(error => {
+                console.error('Error loading conversations:', error);
+                renderConversationsList([]);
+            });
+    } else {
+        // Fetch real messages from API for regular user
+        fetch('/messages/api/messages/')
+            .then(response => response.json())
+            .then(data => {
+                renderChatUI(data.messages || [], null, null);
+            })
+            .catch(error => {
+                console.error('Error loading messages:', error);
+                renderChatUI([], null, null);
+            });
+    }
+
+    // Close on outside click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+}
+
+function renderConversationsList(conversations) {
+    const chatContainer = document.querySelector('#chatModal > div');
+
+    chatContainer.innerHTML = `
+        <!-- Chat Header -->
+        <div style="background: linear-gradient(135deg, #1B3A57 0%, #4A90E2 100%); padding: 20px; color: white; display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div style="width: 50px; height: 50px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-comments" style="font-size: 1.5rem; color: #1B3A57;"></i>
+                </div>
+                <h3 style="margin: 0; font-size: 1.1rem;">Client Support</h3>
+            </div>
+            <button onclick="document.getElementById('chatModal').remove()" style="background: rgba(255,255,255,0.2); border: none; color: white; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 1.5rem; transition: all 0.3s;">
+                ×
+            </button>
+        </div>
+
+        <!-- Conversations List -->
+        <div style="flex: 1; overflow-y: auto; background: #f5f7fa;">
+            ${conversations.length === 0 ? `
+                <div style="text-align: center; padding: 40px 20px; color: #94a3b8;">
+                    <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
+                    <p style="font-size: 1.1rem; margin: 0;">No conversations yet</p>
+                    <p style="font-size: 0.9rem; margin-top: 5px;">Conversations will appear here when clients message you</p>
+                </div>
+            ` : conversations.map(conv => `
+                <div onclick="openConversation(${conv.client_id}, '${conv.client_name}')" style="padding: 15px 20px; border-bottom: 1px solid #e5e7eb; cursor: pointer; transition: all 0.2s; background: white; display: flex; gap: 15px; align-items: center;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='white'">
+                    <div style="position: relative;">
+                        <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #4A90E2, #1B3A57); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem;">
+                            ${conv.client_name.charAt(0).toUpperCase()}
+                        </div>
+                        ${conv.unread_count > 0 ? `
+                            <span style="position: absolute; top: -2px; right: -2px; background: #ef4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; border: 2px solid white;">
+                                ${conv.unread_count}
+                            </span>
+                        ` : ''}
+                    </div>
+                    <div style="flex: 1; min-width: 0;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                            <h4 style="margin: 0; font-size: 1rem; font-weight: 600; color: #1f2937;">${conv.client_name}</h4>
+                            <span style="font-size: 0.75rem; color: #9ca3af;">${conv.last_message_time}</span>
+                        </div>
+                        <p style="margin: 0; font-size: 0.85rem; color: #6b7280; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            ${conv.last_message}
+                        </p>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+
+function openConversation(clientId, clientName) {
+    selectedClientId = clientId;
+
+    // Show loading in the chat container
+    const chatContainer = document.querySelector('#chatModal > div');
+    chatContainer.innerHTML = `
+        <div style="background: linear-gradient(135deg, #1B3A57 0%, #4A90E2 100%); padding: 20px; color: white; display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <button onclick="backToConversationsList()" style="background: rgba(255,255,255,0.2); border: none; color: white; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; margin-right: 5px;">
+                    ←
+                </button>
+                <div style="width: 45px; height: 45px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #1B3A57; font-weight: bold; font-size: 1.1rem;">
+                    ${clientName.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                    <h3 style="margin: 0; font-size: 1.1rem;">${clientName}</h3>
+                    <p style="margin: 0; font-size: 0.85rem; opacity: 0.9;">
+                        <i class="fas fa-circle" style="font-size: 0.5rem; color: #10b981;"></i> Online
+                    </p>
+                </div>
+            </div>
+            <button onclick="document.getElementById('chatModal').remove()" style="background: rgba(255,255,255,0.2); border: none; color: white; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 1.5rem;">
+                ×
+            </button>
+        </div>
+        <div style="flex: 1; display: flex; align-items: center; justify-content: center; background: #f5f7fa;">
+            <div style="text-align: center;">
+                <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #4A90E2; margin-bottom: 10px;"></i>
+                <p style="color: #666;">Loading messages...</p>
+            </div>
+        </div>
+    `;
+
+    // Fetch conversation messages
+    fetch(`/messages/api/conversation/${clientId}/`)
+        .then(response => response.json())
+        .then(data => {
+            renderChatUI(data.messages || [], clientId, data.client_name);
+        })
+        .catch(error => {
+            console.error('Error loading conversation:', error);
+            renderChatUI([], clientId, clientName);
+        });
+}
+
+function backToConversationsList() {
+    selectedClientId = null;
+
+    // Fetch and show conversations list again
+    fetch('/messages/api/conversations/')
+        .then(response => response.json())
+        .then(data => {
+            renderConversationsList(data.conversations || []);
+        })
+        .catch(error => {
+            console.error('Error loading conversations:', error);
+            renderConversationsList([]);
+        });
+}
+
+function renderChatUI(messages, clientId, clientName) {
+    const chatContainer = document.querySelector('#chatModal > div');
+
+    // Determine header based on admin or user
+    const headerHTML = isAdmin && clientId ? `
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <button onclick="backToConversationsList()" style="background: rgba(255,255,255,0.2); border: none; color: white; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; margin-right: 5px;">
+                ←
+            </button>
+            <div style="width: 45px; height: 45px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #1B3A57; font-weight: bold; font-size: 1.1rem;">
+                ${clientName ? clientName.charAt(0).toUpperCase() : 'U'}
+            </div>
+            <div>
+                <h3 style="margin: 0; font-size: 1.1rem;">${clientName || 'User'}</h3>
+                <p style="margin: 0; font-size: 0.85rem; opacity: 0.9;">
+                    <i class="fas fa-circle" style="font-size: 0.5rem; color: #10b981;"></i> Online
+                </p>
+            </div>
+        </div>
+    ` : `
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div style="position: relative;">
+                <div style="width: 50px; height: 50px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-headset" style="font-size: 1.5rem; color: #1B3A57;"></i>
+                </div>
+                <span style="position: absolute; bottom: 2px; right: 2px; width: 12px; height: 12px; background: #10b981; border: 2px solid white; border-radius: 50%;"></span>
+            </div>
+            <div>
+                <h3 style="margin: 0; font-size: 1.1rem;">SafeSpot Support</h3>
+                <p style="margin: 0; font-size: 0.85rem; opacity: 0.9;">
+                    <i class="fas fa-circle" style="font-size: 0.5rem; color: #10b981;"></i> Online
+                </p>
+            </div>
+        </div>
+    `;
+
+    chatContainer.innerHTML = `
+        <!-- Chat Header -->
+        <div style="background: linear-gradient(135deg, #1B3A57 0%, #4A90E2 100%); padding: 20px; color: white; display: flex; align-items: center; justify-content: space-between;">
+            ${headerHTML}
+            <button onclick="document.getElementById('chatModal').remove()" style="background: rgba(255,255,255,0.2); border: none; color: white; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 1.5rem; transition: all 0.3s;">
+                ×
+            </button>
+        </div>
+
+        <!-- Messages Area -->
+        <div id="messagesContainer" style="flex: 1; padding: 20px; overflow-y: auto; background: #f5f7fa; display: flex; flex-direction: column; gap: 12px;">
+            ${messages.length === 0 ? `
+                <div style="text-align: center; padding: 40px 20px; color: #94a3b8;">
+                    <i class="fas fa-comments" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
+                    <p style="font-size: 1.1rem; margin: 0;">No messages yet</p>
+                    <p style="font-size: 0.9rem; margin-top: 5px;">${isAdmin ? 'Start a conversation with this client!' : 'Start a conversation with our support team!'}</p>
+                </div>
+            ` : messages.map(msg => {
+                // For admin view: admin messages on right, user on left
+                // For user view: user messages on right, admin on left
+                const isOwnMessage = isAdmin ? (msg.from === 'admin') : (msg.from === 'user');
+
+                return `
+                <div style="display: flex; ${isOwnMessage ? 'justify-content: flex-end;' : 'justify-content: flex-start;'}">
+                    <div style="max-width: 70%; ${isOwnMessage ? 'background: linear-gradient(135deg, #4A90E2, #1B3A57);' : 'background: white;'} padding: 12px 16px; border-radius: ${isOwnMessage ? '18px 18px 4px 18px' : '18px 18px 18px 4px'}; box-shadow: 0 2px 8px rgba(0,0,0,0.08); position: relative;">
+                        <p style="margin: 0; color: ${isOwnMessage ? 'white' : '#1f2937'}; line-height: 1.5; font-size: 0.95rem; word-wrap: break-word;">${msg.text}</p>
+                        <div style="display: flex; align-items: center; gap: 5px; margin-top: 6px; justify-content: flex-end;">
+                            <span style="font-size: 0.7rem; opacity: ${isOwnMessage ? '0.8' : '0.6'}; color: ${isOwnMessage ? 'white' : '#6b7280'};">${msg.time}</span>
+                            ${isOwnMessage ? `<i class="fas fa-check${msg.read ? '-double' : ''}" style="font-size: 0.65rem; color: ${msg.read ? '#10b981' : 'rgba(255,255,255,0.7)'};"></i>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `}).join('')}
+        </div>
+
+        <!-- Typing Indicator (hidden by default) -->
+        <div id="typingIndicator" style="padding: 10px 20px; background: #f5f7fa; display: none;">
+            <div style="background: white; padding: 10px 15px; border-radius: 15px; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                <div style="width: 8px; height: 8px; background: #94a3b8; border-radius: 50%; animation: typing 1.4s infinite;"></div>
+                <div style="width: 8px; height: 8px; background: #94a3b8; border-radius: 50%; animation: typing 1.4s infinite 0.2s;"></div>
+                <div style="width: 8px; height: 8px; background: #94a3b8; border-radius: 50%; animation: typing 1.4s infinite 0.4s;"></div>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div style="padding: 20px; background: white; border-top: 1px solid #e5e7eb; display: flex; gap: 10px; align-items: center;">
+            <input type="text" id="messageInput" placeholder="Type your message..." style="flex: 1; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 0.95rem; outline: none; transition: all 0.3s;" onkeypress="if(event.key==='Enter') sendMessage()">
+            <button onclick="sendMessage()" style="background: linear-gradient(135deg, #4A90E2, #1B3A57); border: none; color: white; width: 45px; height: 45px; border-radius: 12px; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(74, 144, 226, 0.3);">
+                <i class="fas fa-paper-plane" style="font-size: 1.1rem;"></i>
+            </button>
+        </div>
+    `;
+
+    // Auto-scroll to bottom
+    setTimeout(() => {
+        const container = document.getElementById('messagesContainer');
+        if (container) {
+            container.scrollTop = container.scrollHeight;
+        }
+    }, 100);
+}
+
+function sendMessage() {
+    const input = document.getElementById('messageInput');
+    const message = input.value.trim();
+
+    if (!message) return;
+
+    const container = document.getElementById('messagesContainer');
+    const now = new Date();
+    const time = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+    // Clear input immediately
+    input.value = '';
+    input.disabled = true;
+
+    // Add message to UI immediately (optimistic update)
+    const messageDiv = document.createElement('div');
+    messageDiv.style.cssText = 'display: flex; justify-content: flex-end;';
+    messageDiv.innerHTML = `
+        <div style="max-width: 70%; background: linear-gradient(135deg, #4A90E2, #1B3A57); padding: 12px 16px; border-radius: 18px 18px 4px 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+            <p style="margin: 0; color: white; line-height: 1.5; font-size: 0.95rem; word-wrap: break-word;">${message}</p>
+            <div style="display: flex; align-items: center; gap: 5px; margin-top: 6px; justify-content: flex-end;">
+                <span style="font-size: 0.7rem; opacity: 0.8; color: white;">${time}</span>
+                <i class="fas fa-check" style="font-size: 0.65rem; color: rgba(255,255,255,0.7);"></i>
+            </div>
+        </div>
+    `;
+
+    container.appendChild(messageDiv);
+    container.scrollTop = container.scrollHeight;
+
+    // Prepare request body
+    const requestBody = { message: message };
+
+    // If admin is sending to a specific client, include client_id
+    if (isAdmin && selectedClientId) {
+        requestBody.client_id = selectedClientId;
+    }
+
+    // Send message to server
+    fetch('/messages/api/send/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify(requestBody)
+    })
+    .then(response => response.json())
+    .then(data => {
+        input.disabled = false;
+        input.focus();
+        if (data.success) {
+            // Message sent successfully
+            console.log('Message sent:', data.message);
+            // Update the check mark to double check
+            const lastMessage = container.lastElementChild;
+            if (lastMessage && data.message.read) {
+                const checkIcon = lastMessage.querySelector('.fa-check');
+                if (checkIcon) {
+                    checkIcon.classList.add('fa-check-double');
+                }
+            }
+        } else {
+            console.error('Failed to send message:', data.error);
+            // Remove the optimistic message
+            messageDiv.remove();
+            alert('Failed to send message: ' + (data.error || 'Please try again.'));
+        }
+    })
+    .catch(error => {
+        input.disabled = false;
+        input.focus();
+        console.error('Error sending message:', error);
+        // Remove the optimistic message
+        messageDiv.remove();
+        alert('Network error. Please try again.');
+    });
+}
+
+// Helper function to get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+
+</body>
+</html>

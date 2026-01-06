@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Pick Destination{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1>Pick Your Destination</h1>
+    <div id="map" style="height: 400px; margin-bottom: 20px;"></div>
+    <form method="get" action="{% url 'routes:start_trip' %}">
+        <div class="mb-3">
+            <label for="lat" class="form-label">Latitude</label>
+            <input type="text" class="form-control" id="lat" name="end_lat" placeholder="36.9" required readonly>
+        </div>
+        <div class="mb-3">
+            <label for="lon" class="form-label">Longitude</label>
+            <input type="text" class="form-control" id="lon" name="end_lon" placeholder="10.3" required readonly>
+        </div>
+        <button type="submit" class="btn btn-primary">Check Weather & Risk</button>
+    </form>
+</div>
+
+{% block extra_head %}
+    {{ block.super }}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+{% endblock %}
+
+{% block extra_scripts %}
+    {{ block.super }}
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="{% static 'route.js' %}"></script>
+{% endblock %}
+{% endblock %}

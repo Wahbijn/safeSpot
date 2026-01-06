@@ -1,0 +1,478 @@
+{% extends "base.html" %}
+
+{% block title %}Report Accident{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h2 fw-bold text-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Report New Accident
+                    </h1>
+                    <p class="text-muted mb-0">Fill in the details below to report a traffic accident</p>
+                </div>
+                <a href="{% url 'dashboard_home' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Django Messages -->
+    {% if messages %}
+        <div class="row mb-4">
+            <div class="col">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show d-flex align-items-center" role="alert">
+                        <i class="fas 
+                            {% if message.tags == 'success' %}fa-check-circle
+                            {% elif message.tags == 'error' %}fa-exclamation-circle
+                            {% elif message.tags == 'warning' %}fa-exclamation-triangle
+                            {% else %}fa-info-circle{% endif %} me-3"></i>
+                        <div class="flex-grow-1">{{ message }}</div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4 p-lg-5">
+                    <form method="post" novalidate class="needs-validation">
+                        {% csrf_token %}
+
+                        <!-- Description Field -->
+                        <div class="mb-4">
+                            <label for="{{ form.description.id_for_label }}" class="form-label fw-semibold">
+                                <i class="fas fa-file-alt me-2 text-primary"></i>
+                                Accident Description
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="fas fa-comment-dots text-muted"></i>
+                                </span>
+                                {{ form.description }}
+                            </div>
+                            {% if form.description.errors %}
+                                <div class="invalid-feedback d-block mt-1">
+                                    {% for error in form.description.errors %}
+                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="form-text">
+                                    Provide a clear description of the accident including vehicles involved and severity.
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Location Section -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold d-flex justify-content-between align-items-center">
+                                <span>
+                                    <i class="fas fa-map-marker-alt me-2 text-danger"></i>
+                                    Accident Location
+                                </span>
+                                <button type="button" id="use-location" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-location-arrow me-1"></i>Use My Location
+                                </button>
+                            </label>
+                            
+                            <div class="mb-3">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0">
+                                        <i class="fas fa-map-pin text-muted"></i>
+                                    </span>
+                                    {{ form.localisation }}
+                                </div>
+                                {% if form.localisation.errors %}
+                                    <div class="invalid-feedback d-block mt-1">
+                                        {% for error in form.localisation.errors %}
+                                            <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <div class="form-text">
+                                        Click on the map or use "Use My Location" to set the exact accident location.
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Hidden Coordinates -->
+                            <div class="row g-2 mb-3">
+                                <div class="col-md-6">
+                                    <label for="{{ form.latitude.id_for_label }}" class="form-label small text-muted">Latitude</label>
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text bg-light">
+                                            <i class="fas fa-globe text-muted"></i>
+                                        </span>
+                                        {{ form.latitude }}
+                                    </div>
+                                    {% if form.latitude.errors %}
+                                        <div class="invalid-feedback d-block mt-1">
+                                            {% for error in form.latitude.errors %}
+                                                <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="{{ form.longitude.id_for_label }}" class="form-label small text-muted">Longitude</label>
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text bg-light">
+                                            <i class="fas fa-globe text-muted"></i>
+                                        </span>
+                                        {{ form.longitude }}
+                                    </div>
+                                    {% if form.longitude.errors %}
+                                        <div class="invalid-feedback d-block mt-1">
+                                            {% for error in form.longitude.errors %}
+                                                <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Map Container -->
+                            <div class="card border mb-0">
+                                <div class="card-header bg-light py-2">
+                                    <small class="text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        Click on the map to set accident location
+                                    </small>
+                                </div>
+                                <div id="map" class="card-img-bottom" style="height: 350px;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="d-flex justify-content-between align-items-center pt-4 border-top">
+                            <a href="{% url 'dashboard_home' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-danger btn-lg px-4">
+                                <i class="fas fa-paper-plane me-2"></i>Submit Accident Report
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .card { border-radius: 12px; overflow: hidden; }
+    #map { border-radius: 0 0 12px 12px; }
+    .form-control, .input-group-text { border-radius: 8px; }
+    .input-group .form-control { border-left: none; }
+    .input-group .input-group-text { border-right: none; background-color: #f8f9fa; }
+    .btn { border-radius: 8px; font-weight: 500; }
+    .btn-lg { padding: 0.75rem 2rem; }
+    .leaflet-popup-content { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+    
+    /* Validation styles */
+    .was-validated .form-control:invalid,
+    .form-control.is-invalid {
+        border-color: #1B3A57;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right calc(0.375em + 0.1875rem) center;
+        background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+    }
+    
+    .was-validated .form-control:valid,
+    .form-control.is-valid {
+        border-color: #198754;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%23198754' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right calc(0.375em + 0.1875rem) center;
+        background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+    }
+    
+    .form-control:focus { 
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1); 
+        border-color: #86b7fe; 
+    }
+    
+    .invalid-feedback.d-block {
+        display: block !important;
+        font-size: 0.875em;
+        margin-top: 0.25rem;
+    }
+    
+    /* Map marker popup styling */
+    .leaflet-popup-content-wrapper {
+        border-radius: 8px;
+    }
+</style>
+{% endblock %}
+
+{% block extra_scripts %}
+<!-- Leaflet CSS & JS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+    // Get form elements
+    var latInput = document.getElementById('{{ form.latitude.id_for_label }}');
+    var lngInput = document.getElementById('{{ form.longitude.id_for_label }}');
+    var locationInput = document.getElementById('{{ form.localisation.id_for_label }}');
+    var descriptionInput = document.getElementById('{{ form.description.id_for_label }}');
+    
+    // Initialize map with default view
+    var defaultLat = latInput.value ? parseFloat(latInput.value) : 0;
+    var defaultLng = lngInput.value ? parseFloat(lngInput.value) : 0;
+    
+    var map = L.map('map').setView([defaultLat || 0, defaultLng || 0], defaultLat && defaultLng ? 15 : 2);
+    
+    // Add tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap contributors',
+        subdomains: ['a', 'b', 'c']
+    }).addTo(map);
+
+    // Create custom icon for accident marker
+    var accidentIcon = L.icon({
+        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-red.png',
+        iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x-red.png',
+        shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        tooltipAnchor: [16, -28],
+        shadowSize: [41, 41]
+    });
+
+    var marker = null;
+
+    // Function to set/update marker position
+    function setMarker(lat, lng){
+        if (marker) {
+            marker.setLatLng([lat, lng]);
+        } else {
+            marker = L.marker([lat, lng], {
+                draggable: true,
+                icon: accidentIcon
+            }).addTo(map);
+            
+            marker.bindPopup(
+                '<div class="text-center p-2">' +
+                '<i class="fas fa-car-crash text-danger fa-lg mb-2"></i><br>' +
+                '<strong class="d-block">Accident Location</strong>' +
+                '<small class="text-muted d-block mt-1">Drag to adjust position</small>' +
+                '</div>'
+            ).openPopup();
+            
+            marker.on('dragend', function(e){
+                var pos = e.target.getLatLng();
+                updateCoordinates(pos.lat, pos.lng);
+                reverseGeocode(pos.lat, pos.lng);
+            });
+        }
+        
+        updateCoordinates(lat, lng);
+        map.setView([lat, lng], 15);
+        reverseGeocode(lat, lng);
+    }
+
+    // Function to update coordinate inputs
+    function updateCoordinates(lat, lng){
+        latInput.value = lat.toFixed(6);
+        lngInput.value = lng.toFixed(6);
+        
+        // Trigger validation
+        latInput.dispatchEvent(new Event('input'));
+        lngInput.dispatchEvent(new Event('input'));
+    }
+
+    // Initialize marker if coordinates exist
+    if (latInput.value && lngInput.value) {
+        setMarker(parseFloat(latInput.value), parseFloat(lngInput.value));
+    }
+
+    // Try to get user's location for initial map view
+    if (navigator.geolocation && (!latInput.value || !lngInput.value)) {
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                map.setView([position.coords.latitude, position.coords.longitude], 13);
+            },
+            function(error) {
+                console.log('Geolocation error:', error.message);
+                // Use default view already set
+            },
+            {
+                enableHighAccuracy: false,
+                timeout: 5000,
+                maximumAge: 60000
+            }
+        );
+    }
+
+    // "Use My Location" button handler
+    document.getElementById('use-location').addEventListener('click', function(){
+        var btn = this;
+        var originalText = btn.innerHTML;
+        var originalState = btn.disabled;
+        
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Getting Location...';
+        
+        if (!navigator.geolocation) {
+            showAlert('Geolocation is not supported by your browser', 'warning');
+            btn.disabled = originalState;
+            btn.innerHTML = originalText;
+            return;
+        }
+        
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                setMarker(position.coords.latitude, position.coords.longitude);
+                btn.disabled = originalState;
+                btn.innerHTML = originalText;
+                showAlert('Location set successfully!', 'success');
+            },
+            function(error) {
+                var message = 'Could not get your location: ';
+                switch(error.code) {
+                    case error.PERMISSION_DENIED:
+                        message += 'Permission denied. Please enable location services.';
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        message += 'Location information unavailable.';
+                        break;
+                    case error.TIMEOUT:
+                        message += 'Location request timed out.';
+                        break;
+                    default:
+                        message += 'An unknown error occurred.';
+                }
+                showAlert(message, 'warning');
+                btn.disabled = originalState;
+                btn.innerHTML = originalText;
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            }
+        );
+    });
+
+    // Map click handler
+    map.on('click', function(e){
+        setMarker(e.latlng.lat, e.latlng.lng);
+    });
+
+    // Reverse geocoding function
+    function reverseGeocode(lat, lng){
+        if (!locationInput) return;
+        
+        var originalPlaceholder = locationInput.placeholder;
+        locationInput.placeholder = 'Resolving address...';
+        locationInput.disabled = true;
+        
+        // Use Nominatim OpenStreetMap API
+        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1&zoom=18`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data && data.display_name) {
+                    locationInput.value = data.display_name;
+                }
+                locationInput.placeholder = originalPlaceholder;
+                locationInput.disabled = false;
+            })
+            .catch(error => {
+                console.error('Reverse geocoding error:', error);
+                locationInput.placeholder = originalPlaceholder;
+                locationInput.disabled = false;
+            });
+    }
+
+    // Form validation
+    var form = document.querySelector('.needs-validation');
+    if (form) {
+        form.addEventListener('submit', function(event) {
+            // Validate coordinates
+            if (!latInput.value || !lngInput.value) {
+                event.preventDefault();
+                event.stopPropagation();
+                showAlert('Please select a location on the map', 'warning');
+                document.getElementById('map').scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            form.classList.add('was-validated');
+        });
+    }
+
+    // Helper function to show alerts
+    function showAlert(message, type) {
+        // Remove any existing temporary alerts
+        var existingAlert = document.querySelector('.alert-temporary');
+        if (existingAlert) {
+            existingAlert.remove();
+        }
+        
+        var alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type} alert-dismissible fade show alert-temporary mt-3`;
+        alertDiv.innerHTML = `
+            <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'} me-2"></i>
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        var form = document.querySelector('form');
+        if (form) {
+            form.insertBefore(alertDiv, form.firstChild);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(function() {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 5000);
+        }
+    }
+
+    // Add Bootstrap validation classes on input
+    [latInput, lngInput, locationInput, descriptionInput].forEach(function(input) {
+        if (input) {
+            input.addEventListener('input', function() {
+                if (this.value.trim()) {
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
+                } else {
+                    this.classList.remove('is-valid');
+                }
+            });
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,260 @@
+{% extends "base.html" %}
+
+{% block title %}Accident Management{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-5">
+        <div class="col">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h2 fw-bold text-primary">Accident Management</h1>
+                    <p class="text-muted">Review and manage reported accidents</p>
+                </div>
+                <a href="{% url 'dashboard_home' %}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Django messages -->
+    {% if messages %}
+        <div class="row mb-4">
+            <div class="col">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show d-flex align-items-center" role="alert">
+                        <i class="fas 
+                            {% if message.tags == 'success' %}fa-check-circle
+                            {% elif message.tags == 'error' or message.tags == 'danger' %}fa-exclamation-circle
+                            {% elif message.tags == 'warning' %}fa-exclamation-triangle
+                            {% else %}fa-info-circle{% endif %}
+                            me-3"></i>
+                        <div class="flex-grow-1">{{ message }}</div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Pending Accidents Section -->
+    <div class="row mb-5">
+        <div class="col">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-warning bg-opacity-10 border-0 py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="h5 mb-0">
+                            <i class="fas fa-clock text-warning me-2"></i>
+                            Pending Accidents
+                            <span class="badge bg-warning rounded-pill ms-2">{{ pending_accidents|length }}</span>
+                        </h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if pending_accidents %}
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th width="25%">Description</th>
+                                        <th width="20%">Location</th>
+                                        <th width="15%">Created By</th>
+                                        <th width="15%" class="text-center">Confirmations</th>
+                                        <th width="15%" class="text-center">Cancellations</th>
+                                        <th width="20%" class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for accident in pending_accidents %}
+                                        <tr class="border-bottom">
+                                            <td>
+                                                <div class="fw-medium">
+                                                    {{ accident.description|default:accident.reason|truncatechars:50 }}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-map-marker-alt text-danger me-2"></i>
+                                                    <span>{{ accident.localisation|truncatechars:30 }}</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-user-circle text-secondary me-2"></i>
+                                                    <span>{{ accident.created_by.username|default:"unknown" }}</span>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge bg-success rounded-pill px-3 py-2">
+                                                    <i class="fas fa-check me-1"></i>
+                                                    {{ accident.confirmations.count }}
+                                                </span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge bg-danger rounded-pill px-3 py-2">
+                                                    <i class="fas fa-times me-1"></i>
+                                                    {{ accident.cancellations.count }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                {% if user.is_authenticated %}
+                                                    <div class="d-flex justify-content-center gap-2">
+                                                        {% if user not in accident.confirmations.all %}
+                                                            <a href="{% url 'incidents:confirm_accident' accident.id %}" 
+                                                               class="btn btn-success btn-sm d-flex align-items-center">
+                                                                <i class="fas fa-check me-1"></i> Confirm
+                                                            </a>
+                                                        {% endif %}
+                                                        {% if user not in accident.cancellations.all %}
+                                                            <a href="{% url 'incidents:cancel_accident' accident.id %}" 
+                                                               class="btn btn-outline-danger btn-sm d-flex align-items-center">
+                                                                <i class="fas fa-times me-1"></i> Cancel
+                                                            </a>
+                                                        {% else %}
+                                                            <span class="badge bg-light text-muted border">
+                                                                <i class="fas fa-user-times me-1"></i> You canceled
+                                                            </span>
+                                                        {% endif %}
+                                                    </div>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-inbox fa-3x text-secondary mb-3"></i>
+                            <p class="text-muted">No pending accidents at the moment</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmed Accidents Section -->
+    <div class="row">
+        <div class="col">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-success bg-opacity-10 border-0 py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="h5 mb-0">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            Confirmed Accidents
+                            <span class="badge bg-success rounded-pill ms-2">{{ confirmed_accidents|length }}</span>
+                        </h3>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if confirmed_accidents %}
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th width="25%">Description</th>
+                                        <th width="20%">Location</th>
+                                        <th width="15%">Created By</th>
+                                        <th width="15%" class="text-center">Confirmations</th>
+                                        <th width="15%" class="text-center">Cancellations</th>
+                                        <th width="20%" class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for accident in confirmed_accidents %}
+                                        <tr class="border-bottom">
+                                            <td>
+                                                <div class="fw-medium">
+                                                    {{ accident.description|default:accident.reason|truncatechars:50 }}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-map-marker-alt text-danger me-2"></i>
+                                                    <span>{{ accident.localisation|truncatechars:30 }}</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-user-circle text-secondary me-2"></i>
+                                                    <span>{{ accident.created_by.username|default:"unknown" }}</span>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge bg-success rounded-pill px-3 py-2">
+                                                    <i class="fas fa-check me-1"></i>
+                                                    {{ accident.confirmations.count }}
+                                                </span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge bg-danger rounded-pill px-3 py-2">
+                                                    <i class="fas fa-times me-1"></i>
+                                                    {{ accident.cancellations.count }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                {% if user.is_authenticated %}
+                                                    <div class="d-flex justify-content-center">
+                                                        {% if user not in accident.cancellations.all %}
+                                                            <a href="{% url 'incidents:cancel_accident' accident.id %}" 
+                                                               class="btn btn-outline-danger btn-sm d-flex align-items-center">
+                                                                <i class="fas fa-times me-1"></i> Cancel
+                                                            </a>
+                                                        {% else %}
+                                                            <span class="badge bg-light text-muted border">
+                                                                <i class="fas fa-user-times me-1"></i> You canceled
+                                                            </span>
+                                                        {% endif %}
+                                                    </div>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-check-circle fa-3x text-secondary mb-3"></i>
+                            <p class="text-muted">No confirmed accidents yet</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add some custom CSS for better spacing -->
+<style>
+    .card {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    .card-header {
+        border-bottom: 1px solid rgba(0,0,0,.05);
+    }
+    .table th {
+        font-weight: 600;
+        color: #495057;
+        border-top: none;
+    }
+    .table td {
+        vertical-align: middle;
+    }
+    .btn {
+        border-radius: 8px;
+        font-weight: 500;
+    }
+    .badge {
+        font-weight: 500;
+    }
+    .alert {
+        border-radius: 10px;
+        border: none;
+    }
+</style>
+{% endblock %}

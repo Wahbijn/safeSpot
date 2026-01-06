@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Clients - SafeSpot Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f8f9fa;
+        }
+
+        .navbar-custom {
+            background: linear-gradient(135deg, #4A90E2 0%, #1B3A57 100%);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, #4A90E2 0%, #1B3A57 100%);
+            color: white;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+
+        .card-custom {
+            background: white;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .table-custom {
+            margin-bottom: 0;
+        }
+
+        .table-custom thead {
+            background: #f8f9fa;
+        }
+
+        .table-custom thead th {
+            border-bottom: 2px solid #3388d7;
+            color: #1B3A57;
+            font-weight: 600;
+            padding: 15px;
+        }
+
+        .table-custom tbody td {
+            padding: 15px;
+            vertical-align: middle;
+        }
+
+        .table-custom tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .badge-role {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .badge-client {
+            background: #e3f2fd;
+            color: #1B3A57;
+        }
+
+        .btn-action {
+            padding: 6px 12px;
+            font-size: 0.9rem;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-right: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit {
+            background: #305b84;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #4A90E2 ;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #f24d4d;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #e88d88;
+            color: white;
+        }
+
+        .avatar-thumb {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .search-box {
+            max-width: 300px;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1B3A57;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+    <div class="container-lg">
+        <a class="navbar-brand" href="{% url 'dashboard_home' %}">
+            <i class="fas fa-shield-alt"></i> SafeSpot Admin
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'dashboard_home' %}">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'admin_clients_list' %}">Manage Clients</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'profile' %}">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Header -->
+<div class="header-section">
+    <div class="container-lg">
+        <h1 class="mb-0">
+            <i class="fas fa-users"></i> Manage Clients
+        </h1>
+        <p class="mb-0 mt-2">View and edit all client profiles</p>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="container-lg">
+    {% if messages %}
+    <div>
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i> {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="d-flex justify-content-end mb-4">
+    <a href="{% url 'admin_client_add' %}" class="btn btn-primary btn-lg">
+        <i class="fas fa-user-plus"></i> Add Client
+    </a>
+</div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-number">{{ clients.count }}</div>
+            <div class="stat-label">Total Clients</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ clients|length }}</div>
+            <div class="stat-label">Active Clients</div>
+        </div>
+    </div>
+
+    <!-- Clients Table -->
+    <div class="card-custom">
+        <div class="table-responsive">
+            {% if clients %}
+            <table class="table table-custom">
+                <thead>
+                    <tr>
+                        <th>Avatar</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Joined</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for client in clients %}
+                    <tr>
+                        <td>
+                            {% if client.avatar %}
+                                <img src="{{ client.avatar.url }}" alt="{{ client.username }}" class="avatar-thumb">
+                            {% else %}
+                                <div class="avatar-thumb" style="background: #1B3A57; color: white;">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td><strong>{{ client.username }}</strong></td>
+                        <td>{{ client.email }}</td>
+                        <td>{{ client.get_full_name|default:"—" }}</td>
+                        <td>{{ client.phone|default:"—" }}</td>
+                        <td>{{ client.date_joined|date:"M d, Y" }}</td>
+                        <td>
+                            <a href="{% url 'admin_client_edit' client.id %}" class="btn btn-action btn-edit">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <a href="{% url 'admin_client_delete' client.id %}" class="btn btn-action btn-delete">
+                                <i class="fas fa-trash"></i> Delete
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <p>No clients found</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-dark text-white text-center py-4 mt-5">
+    <p>&copy; 2025 SafeSpot Admin. All rights reserved.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

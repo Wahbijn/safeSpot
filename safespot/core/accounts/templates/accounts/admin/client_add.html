@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Client - SafeSpot Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f8f9fa;
+        }
+
+        .navbar-custom {
+            background: linear-gradient(135deg, #4A90E2 0%, #1B3A57 100%);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, #4A90E2 0%, #1B3A57 100%);
+            color: white;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+
+        .card-custom {
+            background: white;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .form-control, .form-select {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px 12px;
+        }
+
+        .form-control:focus {
+            border-color: #1B3A57;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
+        .btn-submit {
+            background: #1B3A57;
+            color: white;
+            padding: 10px 30px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            background: #4A90E2 ;
+            color: white;
+        }
+
+        .btn-back {
+            color: #1B3A57;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .btn-back:hover {
+            color: #4A90E2;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1B3A57;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #4A90E2;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .errorlist {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .errorlist li {
+            color: #dc3545;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+    <div class="container-lg">
+        <a class="navbar-brand" href="{% url 'dashboard_home' %}">
+            <i class="fas fa-shield-alt"></i> SafeSpot Admin
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'dashboard_home' %}">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'admin_clients_list' %}">Manage Clients</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'profile' %}">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Header -->
+<div class="header-section">
+    <div class="container-lg">
+        <h1 class="mb-2">
+            <a href="{% url 'admin_clients_list' %}" class="btn-back">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            Add New Client
+        </h1>
+        <p class="mb-0">Fill in the details to create a new client account</p>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="container-lg">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card-custom">
+                <h3 class="section-title">
+                    <i class="fas fa-user-plus"></i> Client Information
+                </h3>
+
+                <!-- Add Client Form -->
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <!-- First Name -->
+                    <div class="form-group">
+                        <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name</label>
+                        {{ form.first_name }}
+                        {% if form.first_name.errors %}
+                            {{ form.first_name.errors }}
+                        {% endif %}
+                    </div>
+
+                    <!-- Last Name -->
+                    <div class="form-group">
+                        <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name</label>
+                        {{ form.last_name }}
+                        {% if form.last_name.errors %}
+                            {{ form.last_name.errors }}
+                        {% endif %}
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="{{ form.email.id_for_label }}" class="form-label">Email Address</label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                            {{ form.email.errors }}
+                        {% endif %}
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="form-group">
+                        <label for="{{ form.phone.id_for_label }}" class="form-label">Phone Number</label>
+                        {{ form.phone }}
+                        {% if form.phone.errors %}
+                            {{ form.phone.errors }}
+                        {% endif %}
+                    </div>
+
+                    <!-- Avatar -->
+                    <div class="form-group">
+                        <label for="{{ form.avatar.id_for_label }}" class="form-label">Avatar</label>
+                        {{ form.avatar }}
+                        {% if form.avatar.errors %}
+                            {{ form.avatar.errors }}
+                        {% endif %}
+                        <small class="text-muted d-block mt-2">Accepted formats: PNG, JPG, GIF (Max 5MB)</small>
+                    </div>
+
+                    <!-- Submit Buttons -->
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-submit">
+                            <i class="fas fa-plus"></i> Add Client
+                        </button>
+                        <a href="{% url 'admin_clients_list' %}" class="btn btn-outline-secondary ms-2">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <div class="card-custom">
+                <h5 class="mb-3"><i class="fas fa-bolt"></i> Quick Actions</h5>
+                <a href="#" class="btn btn-outline-primary w-100 mb-2">
+                    <i class="fas fa-key"></i> Reset Password
+                </a>
+                <a href="{% url 'admin_clients_list' %}" class="btn btn-outline-secondary w-100">
+                    <i class="fas fa-list"></i> View All Clients
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-dark text-white text-center py-4 mt-5">
+    <p>&copy; 2025 SafeSpot Admin. All rights reserved.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

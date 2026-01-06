@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Error{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="text-danger">Error</h1>
+    <div class="alert alert-danger mt-3">
+        {{ message }}
+    </div>
+    <a href="{% url 'routes:select' %}" class="btn btn-primary mt-3">Back to Pick Destination</a>
+</div>
+{% endblock %}

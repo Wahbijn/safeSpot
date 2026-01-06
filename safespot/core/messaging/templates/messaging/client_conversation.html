@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Conversation</h2>
+
+    <div class="card mb-3">
+        <div class="card-body">
+            {% if messages %}
+                <ul class="list-unstyled">
+                    {% for m in messages %}
+                        <li class="mb-2">
+                            <strong class="text-primary">{{ m.sender }}</strong>
+                            <small class="text-muted"> - {{ m.created_at|date:"Y-m-d H:i" }}</small>
+                            <div>{{ m.content }}</div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No messages yet. Send the first message below.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <form method="post" action="">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="content" class="form-label">Message</label>
+            <textarea name="content" id="content" rows="4" class="form-control"></textarea>
+        </div>
+        <button class="btn btn-primary" type="submit">Send</button>
+        <a class="btn btn-secondary" href="{% url 'dashboard_home' %}">Back</a>
+    </form>
+</div>
+{% endblock %}

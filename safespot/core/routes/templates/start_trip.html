@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Destination Weather{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1>Destination Weather</h1>
+
+    {% if weather_risk.error %}
+        <div class="alert alert-danger">{{ weather_risk.error }}</div>
+    {% else %}
+        <p><strong>Weather:</strong> {{ weather_risk.weather }}</p>
+        <p><strong>Temperature:</strong> {{ weather_risk.temperature }}°C</p>
+        <p><strong>Wind Speed:</strong> {{ weather_risk.wind_speed }} m/s</p>
+        <p>
+            <strong>Road Risk:</strong>
+            {% if weather_risk.risk == "high" %}
+                <span class="badge bg-danger">High ⚠️</span>
+            {% elif weather_risk.risk == "medium" %}
+                <span class="badge bg-warning text-dark">Medium ⚠️</span>
+            {% else %}
+                <span class="badge bg-success">Low ✅</span>
+            {% endif %}
+        </p>
+    {% endif %}
+
+    <a href="{% url 'routes:select' %}" class="btn btn-secondary mt-3">Pick Another Destination</a>
+</div>
+{% endblock %}

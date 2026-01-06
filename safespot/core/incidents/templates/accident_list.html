@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block title %}Accident Summary{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background: #f8f9fa;
+        color: #212529;
+    }
+
+    .welcome-section {
+        background: linear-gradient(135deg, #4A90E2 0%, #1B3A57 100%);
+        color: #fdfdfd;
+        padding: 40px 0;
+        margin-bottom: 30px;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .card-custom {
+        background: white;
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        padding: 25px;
+        margin-bottom: 20px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(27, 58, 87, 0.15);
+    }
+
+    .section-title {
+        color: #1B3A57;
+        font-weight: 700;
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 3px solid #4A90E2;
+    }
+
+    .btn-action {
+        background: linear-gradient(135deg, #4A90E2, #357ABD);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-block;
+        font-weight: 600;
+    }
+
+    .btn-action:hover {
+        background: linear-gradient(135deg, #357ABD, #2E6BA8);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+    }
+
+    .table-custom {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .table-custom thead {
+        background: linear-gradient(135deg, #1B3A57, #4A90E2);
+        color: white;
+    }
+
+    .table-custom thead th {
+        border: none;
+        padding: 15px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .table-custom tbody tr {
+        transition: background 0.2s ease;
+    }
+
+    .table-custom tbody tr:hover {
+        background: #f8f9fa;
+    }
+
+    .table-custom tbody td {
+        padding: 15px;
+        border-bottom: 1px solid #e9ecef;
+        vertical-align: middle;
+    }
+
+    .badge-count {
+        background: linear-gradient(135deg, #4A90E2, #357ABD);
+        color: white;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .alert-custom {
+        border-radius: 10px;
+        border: none;
+        padding: 15px 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+</style>
+
+<!-- Welcome Header -->
+<div class="welcome-section">
+    <div class="container-lg">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="mb-2" style="font-size: 2rem; font-weight: 700;">
+                    <i class="fas fa-car-crash me-2"></i>Accident Summary
+                </h1>
+                <p class="mb-0" style="font-size: 1.1rem; opacity: 0.95;">
+                    Overview of customer accident reports
+                </p>
+            </div>
+            <a href="{% url 'dashboard_home' %}" class="btn-action">
+                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="container-lg">
+    <!-- Django messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-custom alert-dismissible fade show d-flex align-items-center" role="alert">
+                <i class="fas
+                    {% if message.tags == 'success' %}fa-check-circle
+                    {% elif message.tags == 'error' or message.tags == 'danger' %}fa-exclamation-circle
+                    {% elif message.tags == 'warning' %}fa-exclamation-triangle
+                    {% else %}fa-info-circle{% endif %}
+                    me-3 fa-lg"></i>
+                <div class="flex-grow-1">{{ message }}</div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- User Reported Accidents Section -->
+    <div class="card-custom">
+        <h3 class="section-title">
+            <i class="fas fa-user-friends me-2"></i>
+            User Reported Accidents
+            <span class="badge-count ms-2">{{ user_reports|length }}</span>
+        </h3>
+
+        {% if user_reports %}
+            <div class="table-responsive">
+                <table class="table table-custom mb-0">
+                    <thead>
+                        <tr>
+                            <th>Location</th>
+                            <th>Date & Time</th>
+                            <th>Reporter Name</th>
+                            <th>Reporter Phone</th>
+                            <th>Reporter CIN</th>
+                            <th>Car Type</th>
+                            <th>Reason</th>
+                            <th>Description</th>
+                            <th>Other Party Name</th>
+                            <th>Other Party CIN</th>
+                            <th>Other Party Phone</th>
+                            <th>Guilty</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for report in user_reports %}
+                            <tr>
+                                <td><i class="fas fa-map-marker-alt text-danger me-2"></i>{{ report.localisation }}</td>
+                                <td><i class="fas fa-clock text-primary me-2"></i>{{ report.accident_datetime|date:"M d, Y H:i" }}</td>
+                                <td>{{ report.reporter_name }}</td>
+                                <td><i class="fas fa-phone text-success me-1"></i>{{ report.reporter_phone }}</td>
+                                <td>{{ report.reporter_cin }}</td>
+                                <td><i class="fas fa-car me-1"></i>{{ report.car_type }}</td>
+                                <td>{{ report.reason }}</td>
+                                <td>{{ report.description|default:"No description" }}</td>
+                                <td>{{ report.other_name|default:"-" }}</td>
+                                <td>{{ report.other_cin|default:"-" }}</td>
+                                <td>{{ report.other_phone|default:"-" }}</td>
+                                <td>
+                                    {% if report.guilty %}
+                                        <span class="badge bg-danger">Yes</span>
+                                    {% else %}
+                                        <span class="badge bg-success">No</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-inbox fa-4x mb-3" style="color: #cbd5e1;"></i>
+                <p class="text-muted mb-0" style="font-size: 1.1rem;">No user reported accidents at the moment</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Delete Client - SafeSpot Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f8f9fa;
+        }
+
+        .navbar-custom {
+            background: linear-gradient(135deg, #4A90E2 0%, #1B3A57 100%);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, #4A90E2 0%, #1B3A57 100%);
+            color: white;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+
+        .card-custom {
+            background: white;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .btn-delete {
+            background: #f24d4d;
+            color: white;
+            padding: 10px 30px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .btn-delete:hover {
+            background: #e88d88;
+            color: white;
+        }
+
+        .btn-cancel {
+            background: #1B3A57;
+            color: white;
+            padding: 10px 30px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+
+        .btn-cancel:hover {
+            background: #4A90E2;
+            color: white;
+        }
+
+        .client-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            margin-bottom: 15px;
+        }
+
+        .info-label {
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .info-value {
+            color: #1B3A57;
+            font-size: 1rem;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+    <div class="container-lg">
+        <a class="navbar-brand" href="{% url 'dashboard_home' %}">
+            <i class="fas fa-shield-alt"></i> SafeSpot Admin
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'dashboard_home' %}">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'admin_clients_list' %}">Manage Clients</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'profile' %}">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Header -->
+<div class="header-section">
+    <div class="container-lg">
+        <h1 class="mb-0">
+            <i class="fas fa-trash"></i> Delete Client
+        </h1>
+        <p class="mb-0 mt-2">This action cannot be undone</p>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="container-lg">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card-custom">
+                <!-- Warning Box -->
+                <div class="warning-box">
+                    <h5 class="text-warning mb-2">
+                        <i class="fas fa-exclamation-triangle"></i> Warning!
+                    </h5>
+                    <p class="mb-0">
+                        You are about to permanently delete this client account. This action cannot be undone and will delete all associated data including:
+                    </p>
+                    <ul class="mt-2 mb-0">
+                        <li>User profile and information</li>
+                        <li>All statistics and badges</li>
+                        <li>Account history</li>
+                    </ul>
+                </div>
+
+                <!-- Client Information -->
+                <div class="client-info">
+                    <h5 class="mb-3">Client to Delete:</h5>
+                    <div class="info-item">
+                        <div class="info-label">Username</div>
+                        <div class="info-value">{{ client.username }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Email</div>
+                        <div class="info-value">{{ client.email }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Name</div>
+                        <div class="info-value">{{ client.get_full_name|default:"Not provided" }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Joined</div>
+                        <div class="info-value">{{ client.date_joined|date:"M d, Y" }}</div>
+                    </div>
+                </div>
+
+                <!-- Confirmation Text -->
+                <p class="text-muted mb-4">
+                    Type the client's username <strong>{{ client.username }}</strong> below to confirm deletion:
+                </p>
+
+                <!-- Delete Form -->
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <input type="text" name="confirm" class="form-control form-control-lg" id="confirm" 
+       placeholder="Enter username to confirm" required>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-delete btn-lg" id="deleteBtn" disabled>
+                            <i class="fas fa-trash"></i> Permanently Delete Client
+                        </button>
+                        <a href="{% url 'admin_clients_list' %}" class="btn btn-cancel">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-dark text-white text-center py-4 mt-5">
+    <p>&copy; 2025 SafeSpot Admin. All rights reserved.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const confirmInput = document.getElementById('confirm');
+    const deleteBtn = document.getElementById('deleteBtn');
+    const requiredUsername = '{{ client.username }}';
+
+    confirmInput.addEventListener('input', function() {
+        deleteBtn.disabled = this.value !== requiredUsername;
+    });
+</script>
+</body>
+</html>
