@@ -243,7 +243,7 @@
     <div class="content-card">
         <h3 class="card-title">
             <i class="fas fa-exclamation-triangle me-2"></i>Reported Incidents
-            <span class="badge-count">{{ incidents|length }}</span>
+            <span class="badge-count" id="incident-count">{{ incidents|length }}</span>
         </h3>
 
         {% if incidents %}
@@ -353,6 +353,9 @@ function cancelIncident(incidentId, location) {
             setTimeout(() => {
                 row.remove();
 
+                // Update badge count
+                updateIncidentCount();
+
                 // Check if table is empty
                 const tbody = document.querySelector('.table-simple tbody');
                 if (tbody && tbody.children.length === 0) {
@@ -373,6 +376,25 @@ function cancelIncident(incidentId, location) {
         btn.classList.remove('loading');
         btn.innerHTML = '<i class="fas fa-times-circle"></i> Cancel';
     });
+}
+
+function updateIncidentCount() {
+    // Count remaining rows in the table
+    const tbody = document.querySelector('.table-simple tbody');
+    const remainingCount = tbody ? tbody.children.length : 0;
+
+    // Update the badge
+    const badge = document.getElementById('incident-count');
+    if (badge) {
+        badge.textContent = remainingCount;
+
+        // Add animation to badge
+        badge.style.transform = 'scale(1.2)';
+        badge.style.transition = 'transform 0.2s ease';
+        setTimeout(() => {
+            badge.style.transform = 'scale(1)';
+        }, 200);
+    }
 }
 
 function showToast(message, type) {
