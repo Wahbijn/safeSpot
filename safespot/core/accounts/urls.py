@@ -9,7 +9,7 @@ urlpatterns = [
     
     # Admin routes
     path("admin/clients/", views.admin_clients_list, name="admin_clients_list"),
-    path("admin/clients/add/", views.admin_client_add, name="admin_client_add"),
+    # path("admin/clients/add/", views.admin_client_add, name="admin_client_add"),  # Disabled: Users can only register themselves
     path("admin/clients/<int:client_id>/edit/", views.admin_client_edit, name="admin_client_edit"),
     path("admin/clients/<int:client_id>/delete/", views.admin_client_delete, name="admin_client_delete"),
 ]
