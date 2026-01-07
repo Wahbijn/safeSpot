@@ -30,51 +30,21 @@
         }
 
         body {
-            background: var(--dark);
+            background: white !important;
             min-height: 100vh;
             font-family: 'Inter', sans-serif;
-            color: #fff;
+            color: #212529;
             overflow-x: hidden;
             position: relative;
         }
 
-        /* Animated Background */
+        /* Hide dark theme elements */
         body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background:
-                radial-gradient(circle at 20% 20%, rgba(124, 58, 237, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(0, 212, 255, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, rgba(245, 158, 11, 0.2) 0%, transparent 50%);
-            animation: backgroundPulse 15s ease-in-out infinite;
-            z-index: 0;
+            display: none !important;
         }
 
-        @keyframes backgroundPulse {
-            0%, 100% { opacity: 0.5; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.1); }
-        }
-
-        /* Floating particles */
         .particle {
-            position: fixed;
-            background: var(--primary);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 1;
-            animation: float 20s infinite ease-in-out;
-            opacity: 0.1;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) translateX(0); }
-            25% { transform: translateY(-100px) translateX(50px); }
-            50% { transform: translateY(-50px) translateX(-50px); }
-            75% { transform: translateY(-150px) translateX(100px); }
+            display: none !important;
         }
 
         .main-container {
@@ -85,50 +55,34 @@
             margin: 0 auto;
         }
 
-        /* Glassmorphism Header */
+        /* Blue Gradient Header */
         .header-section {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 30px 40px;
+            background: linear-gradient(135deg, #4A90E2 0%, #1B3A57 100%);
+            border-radius: 0 0 15px 15px;
+            padding: 40px;
             margin-bottom: 30px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             position: relative;
-            overflow: hidden;
+            color: white;
         }
 
         .header-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
-            animation: shimmer 3s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
+            display: none;
         }
 
         .header-title {
-            font-size: 2.5rem;
-            font-weight: 800;
+            font-size: 2rem;
+            font-weight: 700;
             font-family: 'Space Grotesk', sans-serif;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: white !important;
+            background: none !important;
+            -webkit-text-fill-color: white !important;
             margin-bottom: 10px;
             letter-spacing: -0.5px;
         }
 
         .header-subtitle {
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.95);
             font-size: 1rem;
             font-weight: 400;
         }
@@ -142,44 +96,27 @@
         }
 
         .stat-card {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
             padding: 25px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
             position: relative;
-            overflow: hidden;
         }
 
         .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
-            opacity: 0;
-            transition: opacity 0.4s;
+            display: none;
         }
 
         .stat-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 12px 48px rgba(0, 212, 255, 0.3);
-            border-color: var(--primary);
-        }
-
-        .stat-card:hover::before {
-            opacity: 1;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(27, 58, 87, 0.15);
         }
 
         .stat-icon {
-            font-size: 2.8rem;
+            font-size: 2.5rem;
             margin-bottom: 15px;
-            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
         }
 
         .stat-value {
@@ -187,12 +124,11 @@
             font-weight: 700;
             font-family: 'Space Grotesk', sans-serif;
             margin-bottom: 8px;
-            color: #fff;
-            text-shadow: 0 2px 10px rgba(0, 212, 255, 0.5);
+            color: #1B3A57;
         }
 
         .stat-label {
-            color: rgba(255, 255, 255, 0.6);
+            color: #6c757d;
             font-size: 0.85rem;
             font-weight: 500;
             text-transform: uppercase;
@@ -309,41 +245,26 @@
 
         /* Modern Route Options */
         .route-option {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
             padding: 20px;
             margin-bottom: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
             border-left: 4px solid transparent;
             position: relative;
-            overflow: hidden;
         }
 
         .route-option::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.05), transparent);
-            opacity: 0;
-            transition: opacity 0.3s;
+            display: none;
         }
 
         .route-option:hover {
-            transform: translateX(8px) scale(1.02);
-            box-shadow: 0 8px 32px rgba(0, 212, 255, 0.3);
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(27, 58, 87, 0.15);
             border-left-width: 4px;
-        }
-
-        .route-option:hover::before {
-            opacity: 1;
         }
 
         .route-option.safe {
@@ -374,16 +295,14 @@
             font-weight: 700;
             font-size: 1.1rem;
             margin-bottom: 8px;
-            color: #fff;
+            color: #1B3A57;
             font-family: 'Space Grotesk', sans-serif;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
         }
 
         .route-subtitle {
             font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.7);
+            color: #6c757d;
             margin-bottom: 12px;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
         }
 
         .route-stats {
@@ -397,9 +316,8 @@
             align-items: center;
             gap: 6px;
             font-size: 0.85rem;
-            color: #fff;
+            color: #495057;
             font-weight: 500;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
         }
 
         .safety-badge {
@@ -475,13 +393,11 @@
 
         /* Modern Button */
         .btn-modern {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 12px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
             font-weight: 600;
             transition: all 0.3s ease;
             text-decoration: none;
@@ -491,26 +407,24 @@
         }
 
         .btn-modern:hover {
-            background: var(--primary);
-            border-color: var(--primary);
-            color: #fff;
+            background: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.5);
+            color: white;
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0, 212, 255, 0.4);
         }
 
         /* Tips Panel */
         .tips-panel {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
             padding: 20px;
             margin-top: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
         .tips-panel h6 {
-            color: var(--primary);
+            color: #1B3A57;
             font-weight: 600;
             margin-bottom: 12px;
             display: flex;
@@ -524,7 +438,7 @@
         }
 
         .tips-panel li {
-            color: rgba(255, 255, 255, 0.8);
+            color: #6c757d;
             line-height: 1.8;
             font-size: 0.9rem;
         }
@@ -540,7 +454,7 @@
 
         /* Section Title */
         .section-title {
-            color: #fff;
+            color: #1B3A57;
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
             font-size: 1.5rem;
@@ -548,10 +462,12 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #4A90E2;
         }
 
         .section-title i {
-            color: var(--primary);
+            color: #4A90E2;
         }
 
         /* Leaflet Popup Styling - LIGHT & TRANSPARENT */
@@ -626,11 +542,6 @@
     </style>
 </head>
 <body>
-    <!-- Floating Particles -->
-    <div class="particle" style="width: 100px; height: 100px; top: 10%; left: 5%; animation-delay: 0s;"></div>
-    <div class="particle" style="width: 60px; height: 60px; top: 60%; right: 10%; animation-delay: 2s;"></div>
-    <div class="particle" style="width: 80px; height: 80px; bottom: 20%; left: 15%; animation-delay: 4s;"></div>
-
     <div class="main-container">
         <!-- Modern Header -->
         <div class="header-section">
@@ -725,14 +636,28 @@
                             <span class="small">Safe Route</span>
                         </div>
                         <div class="legend-item">
-                            <div class="legend-color" style="background: linear-gradient(90deg, #ffc107, #fd7e14);"></div>
+                            <div class="legend-color" style="background: linear-gradient(90deg, #ffd700, #ffed4e);"></div>
                             <span class="small">Moderate Risk</span>
                         </div>
                         <div class="legend-item">
                             <div class="legend-color" style="background: linear-gradient(90deg, #dc3545, #bd2130);"></div>
                             <span class="small">High Risk</span>
                         </div>
-                        <hr>
+                        <hr style="border-color: rgba(255,255,255,0.3); margin: 15px 0;">
+                        <h6 class="mb-3 fw-bold" style="font-size: 0.85rem;"><i class="fas fa-route"></i> Calculated Routes</h6>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #667eea; box-shadow: 0 0 8px rgba(102, 126, 234, 0.6);"></div>
+                            <span class="small">Direct Route</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #10b981; box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);"></div>
+                            <span class="small">Safest Route</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #f59e0b; box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);"></div>
+                            <span class="small">Alternative Route</span>
+                        </div>
+                        <hr style="border-color: rgba(255,255,255,0.3); margin: 15px 0;">
                         <div class="legend-item">
                             <div class="pulse-dot" style="background: #dc3545;"></div>
                             <span class="small ms-2">Accident Hotspot</span>
@@ -750,19 +675,46 @@
                         <i class="fas fa-route"></i> Available Routes
                     </h4>
 
-                    <div id="routeOptions">
-                        <!-- Routes will be dynamically generated -->
+                    <!-- Route Planning Form -->
+                    <div class="route-planner-panel" style="background: linear-gradient(135deg, #4A90E2 0%, #1B3A57 100%); border-radius: 12px; padding: 25px; margin-bottom: 20px; color: white; box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);">
+                        <h6 style="color: white; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-map-marked-alt"></i> Plan Your Safe Route
+                        </h6>
+
+                        <div class="mb-3">
+                            <label style="font-size: 0.85rem; margin-bottom: 8px; opacity: 0.95; display: block;">
+                                <i class="fas fa-location-arrow me-1"></i> Departure Point
+                            </label>
+                            <select id="departureSelect" class="form-select" style="border-radius: 8px; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.15); color: white; padding: 10px;">
+                                <option value="" style="background: #1B3A57; color: white;">Select departure city...</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label style="font-size: 0.85rem; margin-bottom: 8px; opacity: 0.95; display: block;">
+                                <i class="fas fa-map-marker-alt me-1"></i> Destination
+                            </label>
+                            <select id="destinationSelect" class="form-select" style="border-radius: 8px; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.15); color: white; padding: 10px;">
+                                <option value="" style="background: #1B3A57; color: white;">Select destination city...</option>
+                            </select>
+                        </div>
+
+                        <button id="calculateRouteBtn" class="btn w-100" style="background: rgba(255,255,255,0.25); border: 2px solid rgba(255,255,255,0.4); color: white; font-weight: 600; padding: 12px; border-radius: 8px; transition: all 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.35)'" onmouseout="this.style.background='rgba(255,255,255,0.25)'">
+                            <i class="fas fa-route me-2"></i> Calculate Smart Routes
+                        </button>
+
+                        <div id="routeCalculating" style="display: none; text-align: center; margin-top: 15px;">
+                            <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                            <span style="font-size: 0.9rem;">Analyzing routes...</span>
+                        </div>
                     </div>
 
-                    <div class="tips-panel">
-                        <h6><i class="fas fa-lightbulb"></i> Safety Intelligence</h6>
-                        <ul>
-                            <li>AI analyzes real-time conditions for each route</li>
-                            <li>Green routes show lowest risk based on data</li>
-                            <li>Red indicates high accident zones or severe weather</li>
-                            <li>Risk scores update dynamically throughout the day</li>
-                            <li>Click any location to see detailed statistics</li>
-                        </ul>
+                    <div id="routeOptions">
+                        <!-- Routes will be dynamically generated -->
+                        <div class="text-center py-4" style="color: #6c757d;">
+                            <i class="fas fa-route fa-3x mb-3" style="opacity: 0.3;"></i>
+                            <p class="mb-0">Select departure and destination to view available routes</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1392,11 +1344,295 @@
             fetchWeatherForLocation(lat, lng, 'Selected Point');
         });
 
-        // Add click handlers to city markers (update existing city marker code)
-        // This will be handled when creating markers - we'll update the forEach loop
+        // ============ CUSTOM ROUTE PLANNING FUNCTIONALITY ============
 
-        // Add click handlers to routes (update existing route creation)
-        // This will be handled when creating polylines
+        // Populate city dropdowns
+        function populateCityDropdowns() {
+            const departureSelect = document.getElementById('departureSelect');
+            const destinationSelect = document.getElementById('destinationSelect');
+
+            // Sort cities by name
+            const sortedCities = [...cityData].sort((a, b) => a.city.localeCompare(b.city));
+
+            sortedCities.forEach(city => {
+                const optionHTML = `<option value="${city.city},${city.state}" data-lat="${city.lat}" data-lng="${city.lng}" data-accidents="${city.accidents}" data-severity="${city.avg_severity}" style="background: #1B3A57; color: white;">${city.city}, ${city.state}</option>`;
+                departureSelect.insertAdjacentHTML('beforeend', optionHTML);
+                destinationSelect.insertAdjacentHTML('beforeend', optionHTML);
+            });
+        }
+
+        // Call this after city data is loaded
+        setTimeout(() => {
+            if (cityData && cityData.length > 0) {
+                populateCityDropdowns();
+            }
+        }, 1000);
+
+        // Store custom route layers
+        let customRouteLayers = [];
+
+        // Calculate custom routes
+        document.getElementById('calculateRouteBtn').addEventListener('click', function() {
+            const departureSelect = document.getElementById('departureSelect');
+            const destinationSelect = document.getElementById('destinationSelect');
+
+            const departureValue = departureSelect.value;
+            const destinationValue = destinationSelect.value;
+
+            if (!departureValue || !destinationValue) {
+                alert('Please select both departure and destination cities');
+                return;
+            }
+
+            if (departureValue === destinationValue) {
+                alert('Please select different cities for departure and destination');
+                return;
+            }
+
+            // Get selected city data
+            const departureOption = departureSelect.options[departureSelect.selectedIndex];
+            const destinationOption = destinationSelect.options[destinationSelect.selectedIndex];
+
+            const departure = {
+                city: departureValue.split(',')[0],
+                state: departureValue.split(',')[1],
+                lat: parseFloat(departureOption.dataset.lat),
+                lng: parseFloat(departureOption.dataset.lng),
+                accidents: parseInt(departureOption.dataset.accidents),
+                severity: parseFloat(departureOption.dataset.severity)
+            };
+
+            const destination = {
+                city: destinationValue.split(',')[0],
+                state: destinationValue.split(',')[1],
+                lat: parseFloat(destinationOption.dataset.lat),
+                lng: parseFloat(destinationOption.dataset.lng),
+                accidents: parseInt(destinationOption.dataset.accidents),
+                severity: parseFloat(destinationOption.dataset.severity)
+            };
+
+            // Show loading
+            document.getElementById('routeCalculating').style.display = 'block';
+
+            // Calculate routes
+            setTimeout(() => {
+                calculateAndDisplayRoutes(departure, destination);
+                document.getElementById('routeCalculating').style.display = 'none';
+            }, 800);
+        });
+
+        // Calculate and display custom routes
+        function calculateAndDisplayRoutes(departure, destination) {
+            // Clear previous custom routes
+            customRouteLayers.forEach(layer => map.removeLayer(layer));
+            customRouteLayers = [];
+
+            const distance = calculateDistance(departure.lat, departure.lng, destination.lat, destination.lng);
+
+            // Generate 3 alternative routes with different paths and risk levels
+            const customRoutes = [];
+
+            // Route 1: Direct route (shortest but might be riskier)
+            const directRoute = generateRoute(departure, destination, 'direct', distance);
+            customRoutes.push(directRoute);
+
+            // Route 2: Safer route (slightly longer, avoids high-risk areas)
+            const safeRoute = generateRoute(departure, destination, 'safe', distance * 1.15);
+            customRoutes.push(safeRoute);
+
+            // Route 3: Alternative route (different path, moderate risk)
+            const alternativeRoute = generateRoute(departure, destination, 'alternative', distance * 1.1);
+            customRoutes.push(alternativeRoute);
+
+            // Draw routes on map
+            const routeColors = [
+                { main: '#667eea', glow: 'rgba(102, 126, 234, 0.4)' },  // Purple
+                { main: '#10b981', glow: 'rgba(16, 185, 129, 0.4)' },   // Green
+                { main: '#f59e0b', glow: 'rgba(245, 158, 11, 0.4)' }    // Orange
+            ];
+
+            customRoutes.forEach((route, index) => {
+                const color = routeColors[index];
+
+                // Draw route with glow effect
+                const glowLine = L.polyline(route.coordinates, {
+                    color: color.glow,
+                    weight: 14,
+                    opacity: 0.5,
+                    smoothFactor: 1
+                }).addTo(map);
+
+                const mainLine = L.polyline(route.coordinates, {
+                    color: color.main,
+                    weight: 6,
+                    opacity: 0.9,
+                    smoothFactor: 1
+                }).addTo(map);
+
+                customRouteLayers.push(glowLine, mainLine);
+
+                // Add click handler
+                mainLine.on('click', function() {
+                    highlightCustomRoute(index);
+                });
+
+                // Add markers at start and end
+                const startMarker = L.circleMarker(route.coordinates[0], {
+                    radius: 10,
+                    fillColor: '#4facfe',
+                    color: '#fff',
+                    weight: 3,
+                    fillOpacity: 1
+                }).addTo(map).bindPopup(`<b>Start:</b> ${departure.city}, ${departure.state}`);
+
+                const endMarker = L.circleMarker(route.coordinates[route.coordinates.length - 1], {
+                    radius: 10,
+                    fillColor: color.main,
+                    color: '#fff',
+                    weight: 3,
+                    fillOpacity: 1
+                }).addTo(map).bindPopup(`<b>Destination:</b> ${destination.city}, ${destination.state}<br><b>Risk:</b> ${route.riskScore}%`);
+
+                customRouteLayers.push(startMarker, endMarker);
+            });
+
+            // Fit map to show all routes
+            const bounds = L.latLngBounds(customRoutes[0].coordinates);
+            map.fitBounds(bounds, { padding: [50, 50] });
+
+            // Display route options
+            displayCustomRoutes(customRoutes, departure, destination);
+        }
+
+        // Generate route with waypoints
+        function generateRoute(departure, destination, type, distance) {
+            const waypoints = [];
+            const steps = 8;
+
+            for (let i = 0; i <= steps; i++) {
+                const ratio = i / steps;
+                let lat = departure.lat + (destination.lat - departure.lat) * ratio;
+                let lng = departure.lng + (destination.lng - departure.lng) * ratio;
+
+                // Add variation based on route type
+                if (type === 'safe') {
+                    lat += (Math.sin(ratio * Math.PI) * 0.5);
+                    lng += (Math.cos(ratio * Math.PI) * 0.3);
+                } else if (type === 'alternative') {
+                    lat -= (Math.sin(ratio * Math.PI) * 0.4);
+                    lng += (Math.sin(ratio * Math.PI * 2) * 0.4);
+                }
+
+                waypoints.push([lat, lng]);
+            }
+
+            // Calculate risk and accidents
+            const avgAccidents = (departure.accidents + destination.accidents) / 2;
+            const avgSeverity = (departure.severity + destination.severity) / 2;
+
+            let baseRisk = 20;
+            if (avgAccidents > 10000) baseRisk += 30;
+            else if (avgAccidents > 5000) baseRisk += 20;
+            else if (avgAccidents > 1000) baseRisk += 15;
+
+            if (avgSeverity >= 3) baseRisk += 20;
+            else if (avgSeverity >= 2.5) baseRisk += 15;
+
+            // Adjust based on route type
+            if (type === 'safe') baseRisk = Math.max(baseRisk - 15, 10);
+            else if (type === 'direct') baseRisk += 10;
+
+            // Apply time and weather
+            const timeMultiplier = getTimeRiskMultiplier(currentHour);
+            const weatherMultiplier = getWeatherRiskMultiplier(weatherId);
+
+            let totalRisk = baseRisk;
+            totalRisk += baseRisk * (timeMultiplier - 1);
+            totalRisk += baseRisk * (weatherMultiplier - 1) * 0.5;
+
+            if (windSpeed > 10) totalRisk += 8;
+            else if (windSpeed > 7) totalRisk += 4;
+
+            totalRisk = Math.min(Math.round(totalRisk), 100);
+
+            // Calculate time (assuming average speed 80 km/h)
+            const timeHours = distance / 80;
+            const timeMinutes = Math.round(timeHours * 60);
+
+            return {
+                type: type,
+                name: type === 'direct' ? 'Direct Route' : type === 'safe' ? 'Safest Route' : 'Alternative Route',
+                coordinates: waypoints,
+                distance: distance.toFixed(1),
+                timeMinutes: timeMinutes,
+                riskScore: totalRisk,
+                accidents: Math.round(avgAccidents),
+                description: type === 'direct' ? 'Shortest distance' : type === 'safe' ? 'Recommended - Lowest risk' : 'Balanced option'
+            };
+        }
+
+        // Display custom routes in the panel
+        function displayCustomRoutes(routes, departure, destination) {
+            const routeOptionsHtml = routes.map((route, index) => {
+                const riskLevel = getRiskLevel(route.riskScore);
+                const riskClass = riskLevel.toLowerCase();
+                const color = getRiskColor(route.riskScore);
+
+                const hours = Math.floor(route.timeMinutes / 60);
+                const minutes = route.timeMinutes % 60;
+                const timeStr = hours > 0 ? `${hours}h ${minutes}m` : `${minutes} min`;
+
+                return `
+                    <div class="route-option ${riskClass}" style="animation: fadeIn 0.5s; animation-delay: ${index * 0.1}s; animation-fill-mode: both;" onclick="highlightCustomRoute(${index})">
+                        <div class="route-name">${route.name}</div>
+                        <div class="route-subtitle">${route.description}</div>
+                        <div class="mb-2">
+                            <span class="safety-badge ${riskClass}">
+                                <i class="fas fa-shield-alt"></i> ${riskLevel} - ${route.riskScore}%
+                            </span>
+                        </div>
+                        <div class="route-stats">
+                            <div class="route-stat">
+                                <i class="fas fa-road" style="color: #4A90E2;"></i>
+                                <span>${route.distance} km</span>
+                            </div>
+                            <div class="route-stat">
+                                <i class="fas fa-clock" style="color: #4A90E2;"></i>
+                                <span>${timeStr}</span>
+                            </div>
+                            <div class="route-stat">
+                                <i class="fas fa-car-crash" style="color: #dc3545;"></i>
+                                <span>${route.accidents.toLocaleString()}</span>
+                            </div>
+                        </div>
+                        <div style="margin-top: 10px; font-size: 0.8rem; color: #6c757d;">
+                            <i class="fas fa-info-circle"></i> ${departure.city} → ${destination.city}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('routeOptions').innerHTML = routeOptionsHtml;
+
+            // Add CSS animation
+            const style = document.createElement('style');
+            style.textContent = '@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }';
+            document.head.appendChild(style);
+        }
+
+        // Highlight selected custom route
+        function highlightCustomRoute(index) {
+            // Reset all route opacities
+            customRouteLayers.forEach((layer, i) => {
+                if (layer instanceof L.Polyline) {
+                    if (Math.floor(i / 2) === index) {
+                        layer.setStyle({ opacity: 1, weight: layer.options.weight });
+                    } else {
+                        layer.setStyle({ opacity: 0.3, weight: layer.options.weight * 0.7 });
+                    }
+                }
+            });
+        }
     </script>
 </body>
 </html>

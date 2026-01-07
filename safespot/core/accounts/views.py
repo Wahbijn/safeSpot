@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from .models import Profile
-from .forms import UserEditForm, PasswordChangeForm, forms
+from .forms import UserEditForm, PasswordChangeForm, ProfileEditForm, forms
 
 User = get_user_model()
 
@@ -67,15 +67,36 @@ def profile_view(request):
         profile = Profile.objects.get(user=user)
     except Profile.DoesNotExist:
         profile = Profile.objects.create(user=user)
-    
-    badges = profile.badges.all()
-    
+
+    if request.method == 'POST':
+        user_form = UserEditForm(request.POST, request.FILES, instance=user)
+        profile_form = ProfileEditForm(request.POST, request.FILES, instance=profile)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, 'Your profile has been updated successfully!')
+            return redirect('profile')
+    else:
+        user_form = UserEditForm(instance=user)
+        profile_form = ProfileEditForm(instance=profile)
+
+    # Calculate points dynamically from confirmed incidents
+    points = profile.get_points()
+
+    # Get count of user's confirmed incidents for display
+    from incidents.models import Accident
+    confirmed_incidents = Accident.objects.filter(created_by=user, is_confirmed=True).count()
+
     context = {
         'user': user,
         'profile': profile,
-        'badges': badges,
+        'user_form': user_form,
+        'profile_form': profile_form,
+        'points': points,
+        'confirmed_incidents': confirmed_incidents,
     }
-    
+
     return render(request, 'accounts/profile.html', context)
 
 

@@ -93,7 +93,26 @@ class PasswordChangeForm(forms.Form):
 
 class ProfileEditForm(forms.ModelForm):
     """Form for editing profile information"""
-    
+
     class Meta:
         model = Profile
-        fields = []  # We can extend this later if Profile has additional editable fields
+        fields = ['phone', 'address', 'city', 'bio']
+        widgets = {
+            'phone': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Phone Number',
+            }),
+            'address': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Full Address',
+            }),
+            'city': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'City',
+            }),
+            'bio': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Tell us about yourself...',
+                'rows': 3,
+            }),
+        }

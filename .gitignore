@@ -75,3 +75,8 @@ Thumbs.db
 secrets.json
 *.pem
 *.key
+
+# Documentation & Reports (Academic)
+TECHNICAL_DOCUMENTATION.md
+docs/
+rapport/

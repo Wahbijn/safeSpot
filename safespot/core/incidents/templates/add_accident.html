@@ -1,219 +1,303 @@
 {% extends "base.html" %}
 
-{% block title %}Report Accident{% endblock %}
+{% block title %}Report Incident{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
+<style>
+    /* Override base.html dark theme */
+    body {
+        background: white !important;
+        color: #212529 !important;
+    }
+
+    body::before {
+        display: none !important;
+    }
+
+    .particle {
+        display: none !important;
+    }
+
+    /* Make navbar blue */
+    .modern-navbar {
+        background: linear-gradient(135deg, #4A90E2 0%, #1B3A57 100%) !important;
+        backdrop-filter: none !important;
+        border-bottom: none !important;
+    }
+
+    .modern-navbar .navbar-brand {
+        color: white !important;
+        -webkit-text-fill-color: white !important;
+    }
+
+    .modern-navbar .nav-link {
+        color: rgba(255, 255, 255, 0.9) !important;
+    }
+
+    .modern-navbar .nav-link:hover {
+        color: white !important;
+        background: rgba(255, 255, 255, 0.2) !important;
+    }
+
+    .modern-navbar .nav-link.active {
+        color: white !important;
+        background: rgba(255, 255, 255, 0.3) !important;
+    }
+
+    .modern-container {
+        background: white;
+    }
+
+    .modern-footer {
+        background: #f8f9fa !important;
+        color: #6c757d !important;
+        border-top: 1px solid #dee2e6 !important;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, #4A90E2 0%, #1B3A57 100%);
+        color: white;
+        padding: 40px;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        margin-bottom: 30px;
+    }
+
+    .page-title {
+        color: white !important;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        background: none !important;
+        -webkit-text-fill-color: white !important;
+        background-clip: unset !important;
+        -webkit-background-clip: unset !important;
+    }
+
+    .page-subtitle {
+        color: rgba(255,255,255,0.95) !important;
+        font-size: 1rem;
+    }
+
+    .btn-back {
+        background: rgba(255,255,255,0.2);
+        color: white;
+        border: 2px solid rgba(255,255,255,0.3);
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: all 0.3s;
+        font-weight: 600;
+    }
+
+    .btn-back:hover {
+        background: rgba(255,255,255,0.3);
+        color: white;
+        border-color: rgba(255,255,255,0.5);
+    }
+
+    .content-card {
+        background: white;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .card-title {
+        color: #1B3A57;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 3px solid #4A90E2;
+    }
+</style>
+
+<div class="container-lg">
     <!-- Page Header -->
-    <div class="row mb-4">
-        <div class="col">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h1 class="h2 fw-bold text-danger">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        Report New Accident
-                    </h1>
-                    <p class="text-muted mb-0">Fill in the details below to report a traffic accident</p>
-                </div>
-                <a href="{% url 'dashboard_home' %}" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
-                </a>
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="page-title">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Report Incident
+                </h1>
+                <p class="page-subtitle mb-0">Submit details about a traffic incident</p>
             </div>
+            <a href="{% url 'dashboard_home' %}" class="btn-back">
+                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+            </a>
         </div>
     </div>
 
-    <!-- Django Messages -->
+    <!-- Django messages -->
     {% if messages %}
-        <div class="row mb-4">
-            <div class="col">
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show d-flex align-items-center" role="alert">
-                        <i class="fas 
-                            {% if message.tags == 'success' %}fa-check-circle
-                            {% elif message.tags == 'error' %}fa-exclamation-circle
-                            {% elif message.tags == 'warning' %}fa-exclamation-triangle
-                            {% else %}fa-info-circle{% endif %} me-3"></i>
-                        <div class="flex-grow-1">{{ message }}</div>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' or message.tags == 'danger' %}fa-exclamation-circle{% elif message.tags == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %} me-2"></i>
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
-        </div>
+        {% endfor %}
     {% endif %}
 
-    <div class="row justify-content-center">
-        <div class="col-lg-10 col-xl-8">
-            <div class="card shadow-sm border-0">
-                <div class="card-body p-4 p-lg-5">
-                    <form method="post" novalidate class="needs-validation">
-                        {% csrf_token %}
+    <!-- Content Card -->
+    <div class="content-card">
+        <h3 class="card-title">
+            <i class="fas fa-file-alt me-2"></i>Incident Details
+        </h3>
 
-                        <!-- Description Field -->
-                        <div class="mb-4">
-                            <label for="{{ form.description.id_for_label }}" class="form-label fw-semibold">
-                                <i class="fas fa-file-alt me-2 text-primary"></i>
-                                Accident Description
-                            </label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0">
-                                    <i class="fas fa-comment-dots text-muted"></i>
-                                </span>
-                                {{ form.description }}
-                            </div>
-                            {% if form.description.errors %}
-                                <div class="invalid-feedback d-block mt-1">
-                                    {% for error in form.description.errors %}
-                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
-                                    {% endfor %}
-                                </div>
-                            {% else %}
-                                <div class="form-text">
-                                    Provide a clear description of the accident including vehicles involved and severity.
-                                </div>
-                            {% endif %}
+        <form method="post" novalidate class="needs-validation">
+            {% csrf_token %}
+
+            <!-- Description Field -->
+            <div class="mb-4">
+                <label for="{{ form.description.id_for_label }}" class="form-label" style="color: #1B3A57; font-weight: 600;">
+                    <i class="fas fa-comment-dots me-1"></i>
+                    Incident Description
+                </label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                    <div class="text-danger mt-1">
+                        {% for error in form.description.errors %}
+                            <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="form-text">
+                        Provide a clear description of the incident including vehicles involved and severity.
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Location Section -->
+            <div class="mb-4">
+                <label class="form-label d-flex justify-content-between align-items-center" style="color: #1B3A57; font-weight: 600;">
+                    <span>
+                        <i class="fas fa-map-marker-alt me-1"></i>
+                        Incident Location
+                    </span>
+                    <button type="button" id="use-location" class="btn btn-sm" style="background: #4A90E2; color: white; border: none; border-radius: 8px; padding: 8px 16px; font-weight: 600;">
+                        <i class="fas fa-location-arrow me-1"></i>Use My Location
+                    </button>
+                </label>
+
+                <div class="mb-3">
+                    {{ form.localisation }}
+                    {% if form.localisation.errors %}
+                        <div class="text-danger mt-1">
+                            {% for error in form.localisation.errors %}
+                                <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                            {% endfor %}
                         </div>
-
-                        <!-- Location Section -->
-                        <div class="mb-4">
-                            <label class="form-label fw-semibold d-flex justify-content-between align-items-center">
-                                <span>
-                                    <i class="fas fa-map-marker-alt me-2 text-danger"></i>
-                                    Accident Location
-                                </span>
-                                <button type="button" id="use-location" class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-location-arrow me-1"></i>Use My Location
-                                </button>
-                            </label>
-                            
-                            <div class="mb-3">
-                                <div class="input-group">
-                                    <span class="input-group-text bg-light border-end-0">
-                                        <i class="fas fa-map-pin text-muted"></i>
-                                    </span>
-                                    {{ form.localisation }}
-                                </div>
-                                {% if form.localisation.errors %}
-                                    <div class="invalid-feedback d-block mt-1">
-                                        {% for error in form.localisation.errors %}
-                                            <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
-                                        {% endfor %}
-                                    </div>
-                                {% else %}
-                                    <div class="form-text">
-                                        Click on the map or use "Use My Location" to set the exact accident location.
-                                    </div>
-                                {% endif %}
-                            </div>
-
-                            <!-- Hidden Coordinates -->
-                            <div class="row g-2 mb-3">
-                                <div class="col-md-6">
-                                    <label for="{{ form.latitude.id_for_label }}" class="form-label small text-muted">Latitude</label>
-                                    <div class="input-group input-group-sm">
-                                        <span class="input-group-text bg-light">
-                                            <i class="fas fa-globe text-muted"></i>
-                                        </span>
-                                        {{ form.latitude }}
-                                    </div>
-                                    {% if form.latitude.errors %}
-                                        <div class="invalid-feedback d-block mt-1">
-                                            {% for error in form.latitude.errors %}
-                                                <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="{{ form.longitude.id_for_label }}" class="form-label small text-muted">Longitude</label>
-                                    <div class="input-group input-group-sm">
-                                        <span class="input-group-text bg-light">
-                                            <i class="fas fa-globe text-muted"></i>
-                                        </span>
-                                        {{ form.longitude }}
-                                    </div>
-                                    {% if form.longitude.errors %}
-                                        <div class="invalid-feedback d-block mt-1">
-                                            {% for error in form.longitude.errors %}
-                                                <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                            </div>
-
-                            <!-- Map Container -->
-                            <div class="card border mb-0">
-                                <div class="card-header bg-light py-2">
-                                    <small class="text-muted">
-                                        <i class="fas fa-info-circle me-1"></i>
-                                        Click on the map to set accident location
-                                    </small>
-                                </div>
-                                <div id="map" class="card-img-bottom" style="height: 350px;"></div>
-                            </div>
+                    {% else %}
+                        <div class="form-text">
+                            Click on the map or use "Use My Location" to set the exact incident location.
                         </div>
+                    {% endif %}
+                </div>
 
-                        <!-- Form Actions -->
-                        <div class="d-flex justify-content-between align-items-center pt-4 border-top">
-                            <a href="{% url 'dashboard_home' %}" class="btn btn-outline-secondary">
-                                <i class="fas fa-times me-2"></i>Cancel
-                            </a>
-                            <button type="submit" class="btn btn-danger btn-lg px-4">
-                                <i class="fas fa-paper-plane me-2"></i>Submit Accident Report
-                            </button>
-                        </div>
-                    </form>
+                <!-- Hidden Coordinates -->
+                <div class="row g-2 mb-3">
+                    <div class="col-md-6">
+                        <label for="{{ form.latitude.id_for_label }}" class="form-label small" style="color: #6c757d;">Latitude</label>
+                        {{ form.latitude }}
+                        {% if form.latitude.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.latitude.errors %}
+                                    <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="{{ form.longitude.id_for_label }}" class="form-label small" style="color: #6c757d;">Longitude</label>
+                        {{ form.longitude }}
+                        {% if form.longitude.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in form.longitude.errors %}
+                                    <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Map Container -->
+                <div class="card border mb-0" style="border-radius: 10px; overflow: hidden;">
+                    <div class="card-header py-2" style="background: #f8f9fa; border-bottom: 1px solid #dee2e6;">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Click on the map to set incident location
+                        </small>
+                    </div>
+                    <div id="map" class="card-img-bottom" style="height: 350px;"></div>
                 </div>
             </div>
-        </div>
+
+            <!-- Form Actions -->
+            <div class="d-flex justify-content-between align-items-center pt-4 border-top">
+                <a href="{% url 'dashboard_home' %}" class="btn btn-back" style="text-decoration: none;">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </a>
+                <button type="submit" class="btn btn-lg px-4" style="background: #1B3A57; color: white; border: none; border-radius: 8px; font-weight: 600; padding: 12px 30px; transition: all 0.3s;">
+                    <i class="fas fa-paper-plane me-2"></i>Submit Report
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 {% endblock %}
 
 {% block extra_css %}
 <style>
-    .card { border-radius: 12px; overflow: hidden; }
-    #map { border-radius: 0 0 12px 12px; }
-    .form-control, .input-group-text { border-radius: 8px; }
-    .input-group .form-control { border-left: none; }
-    .input-group .input-group-text { border-right: none; background-color: #f8f9fa; }
-    .btn { border-radius: 8px; font-weight: 500; }
-    .btn-lg { padding: 0.75rem 2rem; }
-    .leaflet-popup-content { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
-    
+    .form-control, .form-select {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 10px 15px;
+        transition: all 0.3s;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #4A90E2;
+        box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
+    }
+
+    .alert {
+        border-radius: 8px;
+        border: none;
+        padding: 15px 20px;
+    }
+
+    .text-danger {
+        color: #dc3545 !important;
+        font-size: 0.875rem;
+        margin-top: 5px;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+    }
+
+    .leaflet-popup-content {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    .leaflet-popup-content-wrapper {
+        border-radius: 8px;
+    }
+
     /* Validation styles */
     .was-validated .form-control:invalid,
     .form-control.is-invalid {
-        border-color: #1B3A57;
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
-        background-repeat: no-repeat;
-        background-position: right calc(0.375em + 0.1875rem) center;
-        background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+        border-color: #dc3545;
     }
-    
+
     .was-validated .form-control:valid,
     .form-control.is-valid {
         border-color: #198754;
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%23198754' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
-        background-repeat: no-repeat;
-        background-position: right calc(0.375em + 0.1875rem) center;
-        background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
-    }
-    
-    .form-control:focus { 
-        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1); 
-        border-color: #86b7fe; 
-    }
-    
-    .invalid-feedback.d-block {
-        display: block !important;
-        font-size: 0.875em;
-        margin-top: 0.25rem;
-    }
-    
-    /* Map marker popup styling */
-    .leaflet-popup-content-wrapper {
-        border-radius: 8px;
     }
 </style>
 {% endblock %}
@@ -248,10 +332,10 @@ document.addEventListener('DOMContentLoaded', function(){
         subdomains: ['a', 'b', 'c']
     }).addTo(map);
 
-    // Create custom icon for accident marker
-    var accidentIcon = L.icon({
-        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-red.png',
-        iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x-red.png',
+    // Create custom icon for incident marker
+    var incidentIcon = L.icon({
+        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+        iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
         shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
         iconSize: [25, 41],
         iconAnchor: [12, 41],
@@ -269,13 +353,13 @@ document.addEventListener('DOMContentLoaded', function(){
         } else {
             marker = L.marker([lat, lng], {
                 draggable: true,
-                icon: accidentIcon
+                icon: incidentIcon
             }).addTo(map);
-            
+
             marker.bindPopup(
                 '<div class="text-center p-2">' +
-                '<i class="fas fa-car-crash text-danger fa-lg mb-2"></i><br>' +
-                '<strong class="d-block">Accident Location</strong>' +
+                '<i class="fas fa-exclamation-triangle fa-lg mb-2" style="color: #4A90E2;"></i><br>' +
+                '<strong class="d-block">Incident Location</strong>' +
                 '<small class="text-muted d-block mt-1">Drag to adjust position</small>' +
                 '</div>'
             ).openPopup();

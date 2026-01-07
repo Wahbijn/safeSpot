@@ -65,9 +65,26 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.CharField(max_length=20, blank=True)
     avatar = models.ImageField(upload_to="avatars/", blank=True, null=True)
-    points = models.IntegerField(default=0)
-    total_predictions = models.IntegerField(default=0)
-    badges = models.ManyToManyField("gamification.Badge", blank=True)
+
+    # Extra user details
+    address = models.CharField(max_length=255, blank=True)
+    city = models.CharField(max_length=100, blank=True)
+    bio = models.TextField(max_length=500, blank=True)
+
+    # Points will be calculated from confirmed incidents
+    def get_points(self):
+        """
+        Calculate points based on confirmed incidents.
+        For every 2 incidents created by this user that get confirmed, give 1 point.
+        """
+        from incidents.models import Accident
+
+        # Get all accidents created by this user
+        user_accidents = Accident.objects.filter(created_by=self.user, is_confirmed=True)
+        confirmed_count = user_accidents.count()
+
+        # Calculate points: 1 point for every 2 confirmed incidents
+        return confirmed_count // 2
 
     def __str__(self):
         return f"Profile of {self.user.username}"

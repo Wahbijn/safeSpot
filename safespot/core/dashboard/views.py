@@ -73,7 +73,19 @@ def get_current_weather(city="Tunis"):
     if not api_key:
         return None
 
-    url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
+    # List of US cities - append ",US" for better API accuracy
+    us_cities = ["New York", "Los Angeles", "Chicago", "Houston", "Phoenix", "Philadelphia",
+                 "San Antonio", "San Diego", "Dallas", "San Jose", "Austin", "Jacksonville",
+                 "Fort Worth", "Columbus", "Charlotte", "San Francisco", "Indianapolis",
+                 "Seattle", "Denver", "Boston", "Miami", "Las Vegas", "Portland", "Detroit", "Nashville"]
+
+    # Add country code for US cities to avoid ambiguity
+    if city in us_cities:
+        city_query = f"{city},US"
+    else:
+        city_query = city
+
+    url = f"https://api.openweathermap.org/data/2.5/weather?q={city_query}&appid={api_key}&units=metric"
 
     try:
         response = requests.get(url, timeout=10)
@@ -102,8 +114,15 @@ def get_current_weather(city="Tunis"):
             'risk_score': risk_score,
             'city': data['name']
         }
+    except requests.exceptions.HTTPError as e:
+        print(f"HTTP Error fetching current weather for {city}: {e}")
+        print(f"Response status: {e.response.status_code}")
+        print(f"Response text: {e.response.text if hasattr(e, 'response') else 'No response'}")
+        return None
     except Exception as e:
-        print(f"Error fetching current weather: {e}")
+        print(f"Error fetching current weather for {city}: {e}")
+        import traceback
+        traceback.print_exc()
         return None
 
 
@@ -113,7 +132,19 @@ def get_weather_forecast(city="Tunis"):
     if not api_key:
         return None
 
-    url = f"https://api.openweathermap.org/data/2.5/forecast?q={city}&appid={api_key}&units=metric"
+    # List of US cities - append ",US" for better API accuracy
+    us_cities = ["New York", "Los Angeles", "Chicago", "Houston", "Phoenix", "Philadelphia",
+                 "San Antonio", "San Diego", "Dallas", "San Jose", "Austin", "Jacksonville",
+                 "Fort Worth", "Columbus", "Charlotte", "San Francisco", "Indianapolis",
+                 "Seattle", "Denver", "Boston", "Miami", "Las Vegas", "Portland", "Detroit", "Nashville"]
+
+    # Add country code for US cities to avoid ambiguity
+    if city in us_cities:
+        city_query = f"{city},US"
+    else:
+        city_query = city
+
+    url = f"https://api.openweathermap.org/data/2.5/forecast?q={city_query}&appid={api_key}&units=metric"
 
     try:
         response = requests.get(url, timeout=10)
@@ -145,8 +176,15 @@ def get_weather_forecast(city="Tunis"):
                     break
 
         return daily_forecasts
+    except requests.exceptions.HTTPError as e:
+        print(f"HTTP Error fetching weather forecast for {city}: {e}")
+        print(f"Response status: {e.response.status_code}")
+        print(f"Response text: {e.response.text if hasattr(e, 'response') else 'No response'}")
+        return None
     except Exception as e:
-        print(f"Error fetching weather data: {e}")
+        print(f"Error fetching weather forecast for {city}: {e}")
+        import traceback
+        traceback.print_exc()
         return None
 
 
@@ -376,6 +414,44 @@ def dashboard_home(request):
     total_users = User.objects.filter(role='client').count()
     total_accidents = UserAccidentReport.objects.count()
 
+    # Calculate pending incidents that THIS user can confirm
+    # Logic: Show only incidents created by OTHER users (not current user)
+    # Because users cannot confirm their own incidents
+    from django.db.models import Count, Q
+
+    # Get all unconfirmed incidents (those needing approval)
+    all_unconfirmed = Accident.objects.filter(is_confirmed=False)
+    print(f"\n=== PENDING INCIDENTS DEBUG ===")
+    print(f"[1] Total unconfirmed incidents in database: {all_unconfirmed.count()}")
+
+    # Count confirmations for each
+    for inc in all_unconfirmed[:10]:
+        print(f"    - ID:{inc.id}, '{inc.localisation}', confirmations={inc.confirmations.count()}, created_by={inc.created_by.username}")
+
+    # Filter for incidents that need more confirmations (less than 2)
+    # AND exclude incidents created by current user (they can't confirm their own)
+    pending_incidents_query = Accident.objects.annotate(
+        num_confirmations=Count('confirmations')
+    ).filter(
+        is_confirmed=False,
+        num_confirmations__lt=2
+    ).exclude(
+        created_by=user  # Exclude user's own incidents
+    )
+    pending_incidents_count = pending_incidents_query.count()
+
+    print(f"[2] Pending incidents created by OTHER users: {pending_incidents_query.count()}")
+    print(f"[3] Current user: {user.username}")
+
+    if pending_incidents_count > 0:
+        print(f"[4] List of incidents user '{user.username}' CAN confirm:")
+        for incident in pending_incidents_query[:10]:
+            print(f"    ✓ ID:{incident.id}, '{incident.localisation}', confirmations={incident.confirmations.count()}, created_by={incident.created_by.username}")
+    else:
+        print(f"[4] No pending incidents for user '{user.username}' to confirm")
+
+    print(f"=== END DEBUG ===\n")
+
     # Calculate total predictions count (all users)
     total_predictions_count = PredictionHistory.objects.count()
 
@@ -394,6 +470,12 @@ def dashboard_home(request):
 
     # Count user's reported accidents (UserAccidentReport uses 'created_by' field)
     reported_accidents_count = UserAccidentReport.objects.filter(created_by=user).count()
+
+    # Count user's created incidents (Accident model - incidents they reported)
+    user_incidents_created = Accident.objects.filter(created_by=user).count()
+
+    # Count incidents user has confirmed (helped confirm)
+    user_confirmations_count = Accident.objects.filter(confirmations=user).count()
 
     top_user_incidents = UserAccidentReport.objects.order_by('-accident_datetime')[:3]
     top_accidents = Accident.objects.order_by('-accident_datetime')[:3]
@@ -445,7 +527,7 @@ def dashboard_home(request):
     # -------------------------------
     # WEATHER DATA
     # -------------------------------
-    weather_city = "Tunis"  # Default city for weather
+    weather_city = "New York"  # Default city for weather (changed to US city)
     current_weather = get_current_weather(weather_city)
     weather_forecast = get_weather_forecast(weather_city)
 
@@ -505,6 +587,11 @@ def dashboard_home(request):
         "user_daily_predictions": user_daily_predictions,  # User's daily predictions
         "reported_accidents_count": reported_accidents_count,  # User's reported accidents
 
+        # 🔽 INCIDENT CONFIRMATION DATA
+        "pending_incidents_count": pending_incidents_count,  # Incidents needing confirmation
+        "user_incidents_created": user_incidents_created,  # User's created incidents
+        "user_confirmations_count": user_confirmations_count,  # Incidents user confirmed
+
         # 🔽 OVERALL RISK DISTRIBUTION DATA
         "risk_labels": risk_labels,
         "risk_values": risk_values,
@@ -537,6 +624,8 @@ def dashboard_home(request):
         "map_data": map_data,
     }
 
+    print(f"\n[FINAL CHECK] Rendering dashboard for user '{user.username}' with pending_incidents_count = {pending_incidents_count}\n")
+
     return render(request, "dashboard/dashboard.html", context)
 
 
@@ -544,15 +633,69 @@ def dashboard_home(request):
 @login_required(login_url='login')
 def get_weather_api(request, city):
     """API endpoint to fetch weather data for a city via AJAX"""
-    current_weather = get_current_weather(city)
-    forecast = get_weather_forecast(city)
+    try:
+        print(f"[Weather API] Fetching weather for city: {city}")
+        current_weather = get_current_weather(city)
+        forecast = get_weather_forecast(city)
 
-    return JsonResponse({
-        'success': True,
-        'current_weather': current_weather,
-        'forecast': forecast,
-        'city': city
-    })
+        print(f"[Weather API] Current weather result: {current_weather is not None}")
+        print(f"[Weather API] Forecast result: {forecast is not None}")
+
+        # Check if forecast data is available
+        if not forecast:
+            error_msg = f'Unable to fetch weather forecast for {city}. The city might not be found or the API might be unavailable.'
+            print(f"[Weather API] Error: {error_msg}")
+            return JsonResponse({
+                'success': False,
+                'error': error_msg,
+                'city': city
+            }, status=404)
+
+        print(f"[Weather API] Successfully fetched weather for {city}, forecast days: {len(forecast)}")
+        return JsonResponse({
+            'success': True,
+            'current_weather': current_weather,
+            'forecast': forecast,
+            'city': city
+        })
+    except Exception as e:
+        error_msg = f'An error occurred while fetching weather data: {str(e)}'
+        print(f"[Weather API] Exception: {error_msg}")
+        import traceback
+        traceback.print_exc()
+        return JsonResponse({
+            'success': False,
+            'error': error_msg,
+            'city': city
+        }, status=500)
+
+
+@login_required
+def get_pending_incidents_count_api(request):
+    """API endpoint to get pending incidents count for real-time updates"""
+    try:
+        # Get pending incidents that THIS user can confirm
+        # Only shows incidents created by OTHER users (not current user)
+        pending_incidents_query = Accident.objects.annotate(
+            num_confirmations=Count('confirmations')
+        ).filter(
+            is_confirmed=False,
+            num_confirmations__lt=2
+        ).exclude(
+            created_by=request.user  # Exclude user's own incidents
+        )
+
+        pending_incidents_count = pending_incidents_query.count()
+
+        return JsonResponse({
+            'success': True,
+            'count': pending_incidents_count
+        })
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)
 
 
 @require_http_methods(["POST"])

@@ -4,119 +4,338 @@
 {% block title %}Submit Accident Report{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2 class="mb-4">Submit Accident Report</h2>
+<style>
+    /* Override base.html dark theme */
+    body {
+        background: white !important;
+        color: #212529 !important;
+    }
 
-    <!-- Display messages -->
+    body::before {
+        display: none !important;
+    }
+
+    .particle {
+        display: none !important;
+    }
+
+    /* Make navbar blue */
+    .modern-navbar {
+        background: linear-gradient(135deg, #4A90E2 0%, #1B3A57 100%) !important;
+        backdrop-filter: none !important;
+        border-bottom: none !important;
+    }
+
+    .modern-navbar .navbar-brand {
+        color: white !important;
+        -webkit-text-fill-color: white !important;
+    }
+
+    .modern-navbar .nav-link {
+        color: rgba(255, 255, 255, 0.9) !important;
+    }
+
+    .modern-navbar .nav-link:hover {
+        color: white !important;
+        background: rgba(255, 255, 255, 0.2) !important;
+    }
+
+    .modern-navbar .nav-link.active {
+        color: white !important;
+        background: rgba(255, 255, 255, 0.3) !important;
+    }
+
+    .modern-container {
+        background: white;
+    }
+
+    .modern-footer {
+        background: #f8f9fa !important;
+        color: #6c757d !important;
+        border-top: 1px solid #dee2e6 !important;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, #4A90E2 0%, #1B3A57 100%);
+        color: white;
+        padding: 40px;
+        border-radius: 0 0 15px 15px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        margin-bottom: 30px;
+    }
+
+    .page-title {
+        color: white !important;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        background: none !important;
+        -webkit-text-fill-color: white !important;
+        background-clip: unset !important;
+        -webkit-background-clip: unset !important;
+    }
+
+    .page-subtitle {
+        color: rgba(255,255,255,0.95) !important;
+        font-size: 1rem;
+    }
+
+    .btn-back {
+        background: rgba(255,255,255,0.2);
+        color: white;
+        border: 2px solid rgba(255,255,255,0.3);
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: all 0.3s;
+        font-weight: 600;
+    }
+
+    .btn-back:hover {
+        background: rgba(255,255,255,0.3);
+        color: white;
+        border-color: rgba(255,255,255,0.5);
+    }
+
+    .content-card {
+        background: white;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .card-title {
+        color: #1B3A57;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 3px solid #4A90E2;
+    }
+
+    .form-section-title {
+        color: #1B3A57;
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-top: 25px;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .form-label {
+        color: #1B3A57;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .form-control, .form-select {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 10px 15px;
+        transition: all 0.3s;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #4A90E2;
+        box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
+    }
+
+    .btn-submit {
+        background: #1B3A57;
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .btn-submit:hover {
+        background: #4A90E2;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+    }
+
+    .text-danger {
+        color: #dc3545 !important;
+        font-size: 0.875rem;
+        margin-top: 5px;
+    }
+
+    .alert {
+        border-radius: 8px;
+        border: none;
+        padding: 15px 20px;
+    }
+</style>
+
+<div class="container-lg">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="page-title">
+                    <i class="fas fa-car-crash me-2"></i>Report Accident
+                </h1>
+                <p class="page-subtitle mb-0">Submit details about a traffic accident</p>
+            </div>
+            <a href="{% url 'dashboard_home' %}" class="btn-back">
+                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Django messages -->
     {% if messages %}
         {% for message in messages %}
             <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' or message.tags == 'danger' %}fa-exclamation-circle{% elif message.tags == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %} me-2"></i>
                 {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         {% endfor %}
     {% endif %}
 
-    <form method="POST" novalidate>
-        {% csrf_token %}
+    <!-- Content Card -->
+    <div class="content-card">
+        <h3 class="card-title">
+            <i class="fas fa-file-alt me-2"></i>Accident Information
+        </h3>
 
-        <!-- Render form fields manually for better Bootstrap control -->
-        <div class="row mb-3">
-            <div class="col-md-4">
-                {{ form.reporter_name.label_tag }}
-                {{ form.reporter_name }}
-                {% if form.reporter_name.errors %}
-                    <div class="text-danger">{{ form.reporter_name.errors }}</div>
+        <form method="POST" novalidate>
+            {% csrf_token %}
+
+            <!-- Reporter Information -->
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label for="{{ form.reporter_name.id_for_label }}" class="form-label">
+                        <i class="fas fa-user me-1"></i>Your Name
+                    </label>
+                    {{ form.reporter_name }}
+                    {% if form.reporter_name.errors %}
+                        <div class="text-danger">{{ form.reporter_name.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-4">
+                    <label for="{{ form.reporter_phone.id_for_label }}" class="form-label">
+                        <i class="fas fa-phone me-1"></i>Your Phone
+                    </label>
+                    {{ form.reporter_phone }}
+                    {% if form.reporter_phone.errors %}
+                        <div class="text-danger">{{ form.reporter_phone.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-4">
+                    <label for="{{ form.reporter_cin.id_for_label }}" class="form-label">
+                        <i class="fas fa-id-card me-1"></i>Your CIN
+                    </label>
+                    {{ form.reporter_cin }}
+                    {% if form.reporter_cin.errors %}
+                        <div class="text-danger">{{ form.reporter_cin.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Accident Details -->
+            <div class="mb-3">
+                <label for="{{ form.accident_datetime.id_for_label }}" class="form-label">
+                    <i class="fas fa-calendar-alt me-1"></i>Accident Date & Time
+                </label>
+                {{ form.accident_datetime }}
+                {% if form.accident_datetime.errors %}
+                    <div class="text-danger">{{ form.accident_datetime.errors }}</div>
                 {% endif %}
             </div>
-            <div class="col-md-4">
-                {{ form.reporter_phone.label_tag }}
-                {{ form.reporter_phone }}
-                {% if form.reporter_phone.errors %}
-                    <div class="text-danger">{{ form.reporter_phone.errors }}</div>
+
+            <div class="mb-3">
+                <label for="{{ form.localisation.id_for_label }}" class="form-label">
+                    <i class="fas fa-map-marker-alt me-1"></i>Location
+                </label>
+                {{ form.localisation }}
+                {% if form.localisation.errors %}
+                    <div class="text-danger">{{ form.localisation.errors }}</div>
                 {% endif %}
             </div>
-            <div class="col-md-4">
-                {{ form.reporter_cin.label_tag }}
-                {{ form.reporter_cin }}
-                {% if form.reporter_cin.errors %}
-                    <div class="text-danger">{{ form.reporter_cin.errors }}</div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="{{ form.car_type.id_for_label }}" class="form-label">
+                        <i class="fas fa-car me-1"></i>Car Type
+                    </label>
+                    {{ form.car_type }}
+                    {% if form.car_type.errors %}
+                        <div class="text-danger">{{ form.car_type.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <label for="{{ form.guilty.id_for_label }}" class="form-label">
+                        <i class="fas fa-gavel me-1"></i>Were You at Fault?
+                    </label>
+                    {{ form.guilty }}
+                    {% if form.guilty.errors %}
+                        <div class="text-danger">{{ form.guilty.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="{{ form.reason.id_for_label }}" class="form-label">
+                    <i class="fas fa-clipboard-list me-1"></i>Reason / Description
+                </label>
+                {{ form.reason }}
+                {% if form.reason.errors %}
+                    <div class="text-danger">{{ form.reason.errors }}</div>
                 {% endif %}
             </div>
-        </div>
 
-        <div class="mb-3">
-            {{ form.accident_datetime.label_tag }}
-            {{ form.accident_datetime }}
-            {% if form.accident_datetime.errors %}
-                <div class="text-danger">{{ form.accident_datetime.errors }}</div>
-            {% endif %}
-        </div>
+            <!-- Other Party Information -->
+            <h4 class="form-section-title">
+                <i class="fas fa-users me-2"></i>Other Party Information
+            </h4>
 
-        <div class="mb-3">
-            {{ form.localisation.label_tag }}
-            {{ form.localisation }}
-            {% if form.localisation.errors %}
-                <div class="text-danger">{{ form.localisation.errors }}</div>
-            {% endif %}
-        </div>
-
-        <div class="row mb-3">
-            <div class="col-md-6">
-                {{ form.car_type.label_tag }}
-                {{ form.car_type }}
-                {% if form.car_type.errors %}
-                    <div class="text-danger">{{ form.car_type.errors }}</div>
-                {% endif %}
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label for="{{ form.other_name.id_for_label }}" class="form-label">
+                        <i class="fas fa-user me-1"></i>Name
+                    </label>
+                    {{ form.other_name }}
+                    {% if form.other_name.errors %}
+                        <div class="text-danger">{{ form.other_name.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-4">
+                    <label for="{{ form.other_phone.id_for_label }}" class="form-label">
+                        <i class="fas fa-phone me-1"></i>Phone
+                    </label>
+                    {{ form.other_phone }}
+                    {% if form.other_phone.errors %}
+                        <div class="text-danger">{{ form.other_phone.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-4">
+                    <label for="{{ form.other_cin.id_for_label }}" class="form-label">
+                        <i class="fas fa-id-card me-1"></i>CIN
+                    </label>
+                    {{ form.other_cin }}
+                    {% if form.other_cin.errors %}
+                        <div class="text-danger">{{ form.other_cin.errors }}</div>
+                    {% endif %}
+                </div>
             </div>
-            <div class="col-md-6">
-                {{ form.guilty.label_tag }}
-                {{ form.guilty }}
-                {% if form.guilty.errors %}
-                    <div class="text-danger">{{ form.guilty.errors }}</div>
-                {% endif %}
+
+            <!-- Hidden latitude / longitude -->
+            {{ form.latitude }}
+            {{ form.longitude }}
+
+            <!-- Submit Button -->
+            <div class="d-flex justify-content-end mt-4 pt-3 border-top">
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-paper-plane me-2"></i>Submit Report
+                </button>
             </div>
-        </div>
-
-        <div class="mb-3">
-            {{ form.reason.label_tag }}
-            {{ form.reason }}
-            {% if form.reason.errors %}
-                <div class="text-danger">{{ form.reason.errors }}</div>
-            {% endif %}
-        </div>
-
-        <h4 class="mt-4">Other Party Information</h4>
-
-        <div class="row mb-3">
-            <div class="col-md-4">
-                {{ form.other_name.label_tag }}
-                {{ form.other_name }}
-                {% if form.other_name.errors %}
-                    <div class="text-danger">{{ form.other_name.errors }}</div>
-                {% endif %}
-            </div>
-            <div class="col-md-4">
-                {{ form.other_phone.label_tag }}
-                {{ form.other_phone }}
-                {% if form.other_phone.errors %}
-                    <div class="text-danger">{{ form.other_phone.errors }}</div>
-                {% endif %}
-            </div>
-            <div class="col-md-4">
-                {{ form.other_cin.label_tag }}
-                {{ form.other_cin }}
-                {% if form.other_cin.errors %}
-                    <div class="text-danger">{{ form.other_cin.errors }}</div>
-                {% endif %}
-            </div>
-        </div>
-
-        <!-- Hidden latitude / longitude -->
-        {{ form.latitude }}
-        {{ form.longitude }}
-
-        <button type="submit" class="btn btn-primary">Submit Report</button>
-    </form>
+        </form>
+    </div>
 </div>
 {% endblock %}

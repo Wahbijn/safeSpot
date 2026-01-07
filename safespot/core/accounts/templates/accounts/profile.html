@@ -5,18 +5,21 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
- 
+        body {
+            background-color: #f4f6f9;
+        }
 
         .navbar .navbar-brand {
-             font-weight: 700;   
-             font-size: 1.5rem;
-             padding: 0 40px;
-         }   
- 
+            font-weight: 700;
+            font-size: 1.5rem;
+            padding: 0 40px;
+        }
+
         .navbar {
             background: linear-gradient(135deg, #4A90E2 0%, #1B3A57 100%);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
+
         .profile-header {
             background: linear-gradient(135deg, #4A90E2 0%, #1B3A57 100%);
             color: white;
@@ -28,9 +31,18 @@
         .profile-card {
             background: #ffffff;
             border-radius: 10px;
-            box-shadow: 0 2px 8px #1B3A57;
+            box-shadow: 0 2px 8px rgba(27, 58, 87, 0.1);
             padding: 25px;
             margin-bottom: 20px;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            object-fit: cover;
+            background: #ffffff;
         }
 
         .info-group {
@@ -38,7 +50,7 @@
         }
 
         .info-label {
-            color: #0a1e31;
+            color: #1B3A57;
             font-weight: 600;
             margin-bottom: 5px;
             font-size: 0.9rem;
@@ -46,8 +58,30 @@
         }
 
         .info-value {
-            font-size: 1.2rem;
-            color: #484747;
+            font-size: 1.1rem;
+            color: #333;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border-left: 3px solid #4A90E2;
+        }
+
+        .form-label {
+            color: #1B3A57;
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        .form-control:focus {
+            border-color: #4A90E2;
+            box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
         }
 
         .points-badge {
@@ -60,64 +94,85 @@
             font-size: 1.1rem;
         }
 
-        .badges-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .badge-item {
-            background: #f8f9fa;
-            border: 2px solid #e9ecef;
+        .stats-card {
+            background: #ffffff;
             border-radius: 10px;
-            padding: 15px;
+            box-shadow: 0 2px 8px rgba(27, 58, 87, 0.1);
+            padding: 20px;
             text-align: center;
+            margin-bottom: 15px;
+            border: 2px solid #f0f0f0;
             transition: all 0.3s ease;
         }
 
-        .badge-item:hover {
-            transform: translateY(-5px);
-            border-color: #1B3A57;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        .stats-card:hover {
+            border-color: #4A90E2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
         }
 
-        .badge-icon {
+        .stats-icon {
             font-size: 2.5rem;
+            color: #4A90E2;
             margin-bottom: 10px;
         }
 
-        .badge-name {
-            font-weight: 600;
-            color: #333;
-            font-size: 0.95rem;
+        .stats-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1B3A57;
         }
 
-        .badge-description {
-            font-size: 0.8rem;
-            color: #494747;
-            margin-top: 8px;
+        .stats-label {
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
         }
 
-        .no-badges {
-            text-align: center;
-            padding: 30px;
-            color: #999;
-        }
-
-        .btn-custom {
-            background: #1B3A57 ;
+        .btn-save {
+            background: #4A90E2;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 30px;
             border-radius: 5px;
-            text-decoration: none;
+            font-weight: 600;
             transition: background 0.3s ease;
         }
 
-        .btn-custom:hover {
-            background: #4A90E2 ;
+        .btn-save:hover {
+            background: #1B3A57;
             color: white;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1B3A57;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #4A90E2;
+            padding-bottom: 10px;
+        }
+
+        .progress-info {
+            background: #e8f4fd;
+            border-left: 4px solid #4A90E2;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .badge-role {
+            background: #4A90E2;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        .badge-admin {
+            background: #7c3aed;
         }
     </style>
 </head>
@@ -125,46 +180,75 @@
 
 <!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-dark">
-    <a class="navbar-brand" href="#">SafeSpot</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'dashboard_home' %}">Dashboard</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link active" href="{% url 'profile' %}">Profile</a>
-            </li>
-            {% if user.role == 'admin' %}
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'admin_clients_list' %}">
-                    <i class="fas fa-users"></i> Manage Clients
-                </a>
-            </li>
-            {% endif %}
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-            </li>
-        </ul>
+    <div class="container-fluid px-4">
+        <a class="navbar-brand" href="{% url 'dashboard_home' %}">
+            <i class="fas fa-shield-alt"></i> SafeSpot
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'dashboard_home' %}">
+                        <i class="fas fa-home"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'routes:route_page' %}">
+                        <i class="fas fa-route"></i> Routes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'profile' %}">
+                        <i class="fas fa-user"></i> Profile
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
 </nav>
-
 
 <!-- Profile Header -->
 <div class="profile-header">
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-md-8">
-                <h1 class="mb-2">{{ user.first_name }} {{ user.last_name }}</h1>
-                <p class="mb-0">@{{ user.username }}</p>
+            <div class="col-md-2 text-center">
+                {% if profile.avatar %}
+                    <img src="{{ profile.avatar.url }}" alt="Avatar" class="profile-avatar">
+                {% else %}
+                    <div class="profile-avatar d-flex align-items-center justify-content-center">
+                        <i class="fas fa-user fa-3x" style="color: #4A90E2;"></i>
+                    </div>
+                {% endif %}
             </div>
-            <!-- Hide points badge for admin -->
-            {% if user.role != 'admin' %}
+            <div class="col-md-6">
+                <h1 class="mb-2">
+                    {% if user.first_name %}
+                        {{ user.first_name }} {{ user.last_name }}
+                    {% else %}
+                        {{ user.username }}
+                    {% endif %}
+                </h1>
+                <p class="mb-0"><i class="fas fa-at"></i> {{ user.username }}</p>
+                {% if user.role == 'client' %}
+                    <span class="badge-role"><i class="fas fa-user-shield"></i> Community Member</span>
+                {% else %}
+                    <span class="badge-role badge-admin"><i class="fas fa-crown"></i> Administrator</span>
+                {% endif %}
+            </div>
+            {% if user.role == 'client' %}
             <div class="col-md-4 text-end">
                 <div class="points-badge">
-                    <i class="fas fa-star"></i> {{ profile.points }} Points
+                    <i class="fas fa-star"></i> {{ points }} Points
+                </div>
+                <div style="color: rgba(255,255,255,0.8); font-size: 0.85rem; margin-top: 5px;">
+                    Earn 1 point per 2 confirmed incidents
                 </div>
             </div>
             {% endif %}
@@ -175,10 +259,69 @@
 <!-- Profile Content -->
 <div class="container">
     <div class="row">
-        <!-- User Information Card -->
+        <!-- Main Profile Info -->
         <div class="col-md-8">
+            <!-- Edit Profile Form -->
             <div class="profile-card">
-                <h4 class="mb-4"><i class="fas fa-user-circle"></i> Account Information</h4>
+                <h4 class="section-title"><i class="fas fa-user-edit"></i> Edit Profile</h4>
+
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">First Name</label>
+                                {{ user_form.first_name }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Last Name</label>
+                                {{ user_form.last_name }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email Address</label>
+                        {{ user_form.email }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Phone Number</label>
+                        {{ profile_form.phone }}
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">City</label>
+                                {{ profile_form.city }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Address</label>
+                                {{ profile_form.address }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Bio</label>
+                        {{ profile_form.bio }}
+                    </div>
+
+                    <button type="submit" class="btn-save">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                </form>
+            </div>
+
+            <!-- Account Information -->
+            <div class="profile-card">
+                <h4 class="section-title"><i class="fas fa-info-circle"></i> Account Information</h4>
 
                 <div class="row">
                     <div class="col-md-6">
@@ -189,137 +332,88 @@
                     </div>
                     <div class="col-md-6">
                         <div class="info-group">
-                            <div class="info-label">Email</div>
-                            <div class="info-value">{{ user.email }}</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="info-group">
-                            <div class="info-label">Phone</div>
-                            <div class="info-value">{{ user.phone|default:"Not provided" }}</div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="info-group">
-                            <div class="info-label">Role</div>
+                            <div class="info-label">Account Role</div>
                             <div class="info-value">
-                                <span class="badge bg-info">{{ user.get_role_display }}</span>
+                                {% if user.role == 'admin' %}
+                                    <i class="fas fa-crown"></i> Administrator
+                                {% else %}
+                                    <i class="fas fa-user"></i> Community Member
+                                {% endif %}
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <hr>
-
-                <div class="row">
-                    <!-- Hide total predictions for admin -->
-                    {% if user.role != 'admin' %}
-                    <div class="col-md-6">
-                        <div class="info-group">
-                            <div class="info-label">Total Predictions</div>
-                            <div class="info-value">{{ profile.total_predictions }}</div>
-                        </div>
-                    </div>
-                    {% else %}
-                    <div class="col-md-6"></div>
-                    {% endif %}
-                    <div class="col-md-6">
-                        <div class="info-group">
-                            <div class="info-label">Member Since</div>
-                            <div class="info-value">{{ user.date_joined|date:"M d, Y" }}</div>
-                        </div>
-                    </div>
+                <div class="info-group">
+                    <div class="info-label">Member Since</div>
+                    <div class="info-value">{{ user.date_joined|date:"F d, Y" }}</div>
                 </div>
             </div>
+        </div>
 
-            <!-- Hide Badges Card for admin -->
-            {% if user.role != 'admin' %}
+        <!-- Sidebar Stats -->
+        <div class="col-md-4">
+            {% if user.role == 'client' %}
+            <!-- Points Card -->
+            <div class="stats-card">
+                <div class="stats-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="stats-value">{{ points }}</div>
+                <div class="stats-label">Total Points</div>
+            </div>
+
+            <!-- Confirmed Incidents Card -->
+            <div class="stats-card">
+                <div class="stats-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stats-value">{{ confirmed_incidents }}</div>
+                <div class="stats-label">Confirmed Incidents</div>
+            </div>
+
+            <!-- Progress Info -->
             <div class="profile-card">
-                <h4 class="mb-4"><i class="fas fa-trophy"></i> Badges ({{ badges.count }})</h4>
-
-                {% if badges %}
-                    <div class="badges-container">
-                        {% for badge in badges %}
-                        <div class="badge-item">
-                            <div class="badge-icon">
-                                <i class="fas fa-medal" style="color: #ffc107;"></i>
-                            </div>
-                            <div class="badge-name">{{ badge.name }}</div>
-                            <div class="badge-description">{{ badge.description|truncatewords:5 }}</div>
-                        </div>
-                        {% endfor %}
+                <h5 style="color: #1B3A57; font-weight: 600; margin-bottom: 15px;">
+                    <i class="fas fa-chart-line"></i> Progress Info
+                </h5>
+                <p style="color: #555; font-size: 0.95rem; line-height: 1.6;">
+                    You've reported <strong style="color: #4A90E2;">{{ confirmed_incidents }}</strong> incidents that have been confirmed.
+                </p>
+                {% if confirmed_incidents > 0 %}
+                    <div class="progress-info">
+                        {% with remainder=confirmed_incidents|divisibleby:"2" %}
+                            {% if remainder %}
+                                <i class="fas fa-trophy" style="color: #ffc107;"></i>
+                                Great job! Report more incidents to earn your next point!
+                            {% else %}
+                                <i class="fas fa-info-circle" style="color: #4A90E2;"></i>
+                                One more confirmed incident and you'll earn another point!
+                            {% endif %}
+                        {% endwith %}
                     </div>
                 {% else %}
-                    <div class="no-badges">
-                        <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
-                        <p>No badges earned yet. Complete more tasks to earn badges!</p>
+                    <div class="progress-info">
+                        <i class="fas fa-lightbulb" style="color: #f59e0b;"></i>
+                        Start reporting incidents to earn points!
                     </div>
                 {% endif %}
             </div>
+            {% else %}
+            <!-- Admin Sidebar -->
+            <div class="profile-card text-center">
+                <div style="font-size: 4rem; color: #4A90E2; margin-bottom: 1rem;">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <h4 style="color: #1B3A57; font-weight: 700; margin-bottom: 1rem;">
+                    Administrator Access
+                </h4>
+                <p style="color: #666;">
+                    You have full system access and control.
+                </p>
+            </div>
             {% endif %}
         </div>
-
-        <!-- Sidebar Stats - Hide for admin -->
-        {% if user.role != 'admin' %}
-        <div class="col-md-4">
-            <div class="profile-card text-center">
-                <div class="mb-3">
-                    <i class="fas fa-star" style="font-size: 3rem; color: #1B3A57;"></i>
-                </div>
-                <h3 class="points-badge">{{ profile.points }}</h3>
-                <p class="text-muted mt-2">Total Points</p>
-            </div>
-
-            <div class="profile-card text-center">
-                <div class="mb-3">
-                    <i class="fas fa-tasks" style="font-size: 3rem; color: #1B3A57;"></i>
-                </div>
-                <h3 style="color: #1B3A57;">{{ profile.total_predictions }}</h3>
-                <p class="text-muted mt-2">Predictions Made</p>
-            </div>
-
-            <div class="profile-card text-center">
-                <div class="mb-3">
-                    <i class="fas fa-trophy" style="font-size: 3rem; color: #ffc107;"></i>
-                </div>
-                <h3 style="color: #333;">{{ badges.count }}</h3>
-                <p class="text-muted mt-2">Badges Earned</p>
-            </div>
-
-            <a href="{% url 'logout' %}" class="btn btn-custom w-100 mt-3">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </a>
-        </div>
-        {% else %}
-        <!-- Admin Sidebar (without gamification) -->
-        <div class="col-md-4">
-            <div class="profile-card text-center">
-                <div class="mb-3">
-                    <i class="fas fa-user-shield" style="font-size: 3rem; color: #1B3A57"></i>
-                </div>
-                <h3 style="color: #1B3A57;">Administrator</h3>
-                <p class="text-muted mt-2">You have full system access</p>
-            </div>
-
-            <div class="profile-card text-center">
-                <div class="mb-3">
-                    <i class="fas fa-cogs" style="font-size: 3rem; color: #1B3A57;"></i>
-                </div>
-                <h3 style="color: #1B3A57;">Manage System</h3>
-                <p class="text-muted mt-2">Access admin controls</p>
-                <a href="{% url 'admin_clients_list' %}" class="btn btn-custom mt-2">
-                    <i class="fas fa-users"></i> Manage Clients
-                </a>
-            </div>
-
-            <a href="{% url 'logout' %}" class="btn btn-custom w-100 mt-3">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </a>
-        </div>
-        {% endif %}
     </div>
 </div>
 

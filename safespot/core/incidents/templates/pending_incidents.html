@@ -1,0 +1,635 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Pending Incidents{% endblock %}
+
+{% block content %}
+<style>
+    /* Override base.html dark theme */
+    body {
+        background: white !important;
+        color: #212529 !important;
+    }
+
+    body::before {
+        display: none !important;
+    }
+
+    .particle {
+        display: none !important;
+    }
+
+    /* Make navbar blue */
+    .modern-navbar {
+        background: linear-gradient(135deg, #4A90E2 0%, #1B3A57 100%) !important;
+        backdrop-filter: none !important;
+        border-bottom: none !important;
+    }
+
+    .modern-navbar .navbar-brand {
+        color: white !important;
+        -webkit-text-fill-color: white !important;
+    }
+
+    .modern-navbar .nav-link {
+        color: rgba(255, 255, 255, 0.9) !important;
+    }
+
+    .modern-navbar .nav-link:hover {
+        color: white !important;
+        background: rgba(255, 255, 255, 0.2) !important;
+    }
+
+    .modern-navbar .nav-link.active {
+        color: white !important;
+        background: rgba(255, 255, 255, 0.3) !important;
+    }
+
+    .modern-container {
+        background: white;
+    }
+
+    .modern-footer {
+        background: #f8f9fa !important;
+        color: #6c757d !important;
+        border-top: 1px solid #dee2e6 !important;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, #4A90E2 0%, #1B3A57 100%);
+        color: white;
+        padding: 50px;
+        border-radius: 0 0 20px 20px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        margin-bottom: 40px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        animation: rotate 20s linear infinite;
+    }
+
+    @keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    .page-title {
+        color: white !important;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        background: none !important;
+        -webkit-text-fill-color: white !important;
+        position: relative;
+        z-index: 1;
+    }
+
+    .page-subtitle {
+        color: rgba(255,255,255,0.95) !important;
+        font-size: 1.1rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .stats-badge {
+        display: inline-block;
+        background: rgba(255,255,255,0.2);
+        padding: 8px 20px;
+        border-radius: 50px;
+        font-weight: 600;
+        margin-top: 15px;
+    }
+
+    .btn-back {
+        background: rgba(255,255,255,0.2);
+        color: white;
+        border: 2px solid rgba(255,255,255,0.3);
+        padding: 12px 25px;
+        border-radius: 10px;
+        text-decoration: none;
+        transition: all 0.3s;
+        font-weight: 600;
+        position: relative;
+        z-index: 1;
+    }
+
+    .btn-back:hover {
+        background: rgba(255,255,255,0.3);
+        color: white;
+        border-color: rgba(255,255,255,0.5);
+        transform: translateY(-2px);
+    }
+
+    .incident-card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        transition: all 0.3s;
+        border: 2px solid transparent;
+    }
+
+    .incident-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        border-color: #4A90E2;
+    }
+
+    .trust-meter {
+        height: 30px;
+        background: #e9ecef;
+        border-radius: 50px;
+        overflow: hidden;
+        position: relative;
+        margin: 15px 0;
+    }
+
+    .trust-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #10b981 0%, #4A90E2 100%);
+        border-radius: 50px;
+        transition: width 0.5s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 700;
+        font-size: 0.9rem;
+    }
+
+    .trust-fill.low {
+        background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+    }
+
+    .trust-fill.medium {
+        background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+    }
+
+    .trust-fill.high {
+        background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+    }
+
+    .btn-confirm, .btn-reject {
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-weight: 600;
+        border: none;
+        transition: all 0.3s;
+        cursor: pointer;
+        min-width: 140px;
+    }
+
+    .btn-confirm {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-confirm:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-reject {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-reject:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+    }
+
+    .btn-confirm:disabled, .btn-reject:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .vote-badge {
+        display: inline-block;
+        padding: 6px 16px;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-right: 10px;
+    }
+
+    .vote-badge.confirmed {
+        background: rgba(16, 185, 129, 0.15);
+        color: #059669;
+    }
+
+    .vote-badge.rejected {
+        background: rgba(239, 68, 68, 0.15);
+        color: #dc2626;
+    }
+
+    .incident-detail {
+        margin: 10px 0;
+        padding: 12px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .incident-detail:last-child {
+        border-bottom: none;
+    }
+
+    .detail-label {
+        color: #6c757d;
+        font-weight: 600;
+        margin-right: 8px;
+    }
+
+    .detail-value {
+        color: #1B3A57;
+        font-weight: 500;
+    }
+
+    .alert-success, .alert-danger {
+        border-radius: 10px;
+        border: none;
+        padding: 15px 20px;
+        margin-bottom: 20px;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+    }
+
+    .empty-state i {
+        font-size: 5rem;
+        color: #dee2e6;
+        margin-bottom: 20px;
+    }
+
+    .empty-state h3 {
+        color: #6c757d;
+        margin-bottom: 10px;
+    }
+
+    .empty-state p {
+        color: #adb5bd;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .incident-card {
+        animation: slideIn 0.5s ease;
+    }
+</style>
+
+<div class="container-lg">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="page-title">
+                    <i class="fas fa-shield-check me-3"></i>Confirm Incidents
+                </h1>
+                <p class="page-subtitle mb-0">Help verify incident reports by confirming or rejecting them</p>
+                <span class="stats-badge">
+                    <i class="fas fa-clock me-2"></i>{{ total_pending }} Pending Confirmation
+                </span>
+            </div>
+            <a href="{% url 'dashboard_home' %}" class="btn-back">
+                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Incidents List -->
+    {% if incidents_with_trust %}
+        <div class="row">
+            <div class="col-12">
+                <h4 class="mb-4" style="color: #1B3A57; font-weight: 700;">
+                    <i class="fas fa-list-check me-2"></i>Pending Incidents
+                </h4>
+            </div>
+
+            {% for item in incidents_with_trust %}
+            <div class="col-12" id="incident-card-{{ item.incident.id }}">
+                <div class="incident-card">
+                    <!-- Header with Trust Percentage -->
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h5 style="color: #1B3A57; font-weight: 700; margin-bottom: 5px;">
+                                <i class="fas fa-map-marker-alt me-2" style="color: #4A90E2;"></i>
+                                {{ item.incident.localisation }}
+                            </h5>
+                            <small class="text-muted">
+                                <i class="fas fa-calendar me-1"></i>
+                                Reported {{ item.incident.created_at|timesince }} ago by
+                                {% if item.is_own_incident %}
+                                    <strong style="color: #4A90E2;">You</strong>
+                                {% else %}
+                                    {{ item.incident.created_by.username }}
+                                {% endif %}
+                            </small>
+                        </div>
+                        <div class="text-end">
+                            {% if item.is_own_incident %}
+                                <span class="vote-badge" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 8px 16px; border-radius: 25px; font-size: 0.85rem; font-weight: 600; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); animation: pulse 2s infinite;">
+                                    <i class="fas fa-user-crown me-1"></i>Your Incident
+                                </span>
+                            {% elif item.user_confirmed %}
+                                <span class="vote-badge confirmed">
+                                    <i class="fas fa-check-circle me-1"></i>You Confirmed
+                                </span>
+                            {% elif item.user_rejected %}
+                                <span class="vote-badge rejected">
+                                    <i class="fas fa-times-circle me-1"></i>You Rejected
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Trust Meter -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span style="font-weight: 600; color: #1B3A57;">
+                                <i class="fas fa-chart-line me-2"></i>Trust Level
+                            </span>
+                            <span id="trust-percentage-{{ item.incident.id }}" style="font-weight: 700; color: #4A90E2;">
+                                {{ item.trust_percentage }}%
+                            </span>
+                        </div>
+                        <div class="trust-meter">
+                            <div class="trust-fill {% if item.trust_percentage < 30 %}low{% elif item.trust_percentage < 70 %}medium{% else %}high{% endif %}"
+                                 style="width: {{ item.trust_percentage }}%;"
+                                 id="trust-fill-{{ item.incident.id }}">
+                                {% if item.trust_percentage > 15 %}{{ item.trust_percentage }}%{% endif %}
+                            </div>
+                        </div>
+                        <small class="text-muted">
+                            <i class="fas fa-users me-1"></i>
+                            <span id="confirmation-count-{{ item.incident.id }}">{{ item.confirmation_count }}</span> confirmations,
+                            <span id="cancellation-count-{{ item.incident.id }}">{{ item.cancellation_count }}</span> rejections
+                        </small>
+                    </div>
+
+                    <!-- Incident Details -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="incident-detail">
+                                <span class="detail-label"><i class="fas fa-car me-1"></i>Vehicle Type:</span>
+                                <span class="detail-value">{{ item.incident.car_type }}</span>
+                            </div>
+                            <div class="incident-detail">
+                                <span class="detail-label"><i class="fas fa-gavel me-1"></i>Responsibility:</span>
+                                <span class="detail-value">{{ item.incident.get_guilty_display }}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="incident-detail">
+                                <span class="detail-label"><i class="fas fa-user me-1"></i>Reporter:</span>
+                                <span class="detail-value">{{ item.incident.reporter_name }}</span>
+                            </div>
+                            <div class="incident-detail">
+                                <span class="detail-label"><i class="fas fa-phone me-1"></i>Contact:</span>
+                                <span class="detail-value">{{ item.incident.reporter_phone }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if item.incident.reason %}
+                    <div class="incident-detail mt-3">
+                        <span class="detail-label"><i class="fas fa-clipboard-list me-1"></i>Description:</span>
+                        <p class="detail-value mb-0 mt-2">{{ item.incident.reason }}</p>
+                    </div>
+                    {% endif %}
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-content-end gap-3 mt-4 pt-3 border-top" id="action-buttons-{{ item.incident.id }}">
+                        {% if item.is_own_incident %}
+                            <div class="w-100 text-center" style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)); padding: 20px; border-radius: 12px; border: 2px dashed #667eea;">
+                                <i class="fas fa-lock" style="font-size: 2rem; color: #667eea; margin-bottom: 10px; opacity: 0.7;"></i>
+                                <p class="mb-2" style="font-weight: 600; color: #1B3A57; font-size: 1rem;">
+                                    <i class="fas fa-info-circle me-2" style="color: #667eea;"></i>
+                                    You created this incident
+                                </p>
+                                <p class="mb-0 text-muted" style="font-size: 0.9rem;">
+                                    Only other users can confirm or reject it. Watch the votes to see community trust!
+                                </p>
+                            </div>
+                        {% elif item.can_vote %}
+                            <button class="btn-reject" onclick="rejectIncident({{ item.incident.id }})">
+                                <i class="fas fa-times-circle me-2"></i>Reject
+                            </button>
+                            <button class="btn-confirm" onclick="confirmIncident({{ item.incident.id }})">
+                                <i class="fas fa-check-circle me-2"></i>Confirm
+                            </button>
+                        {% else %}
+                            <p class="text-muted mb-0">
+                                <i class="fas fa-info-circle me-2"></i>
+                                You have already voted on this incident.
+                            </p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Message Container -->
+                    <div id="message-{{ item.incident.id }}" class="mt-3" style="display: none;"></div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <i class="fas fa-check-double"></i>
+            <h3>All Caught Up!</h3>
+            <p>There are no pending incidents to confirm at the moment.</p>
+            <a href="{% url 'dashboard_home' %}" class="btn-back mt-3" style="display: inline-block;">
+                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function confirmIncident(incidentId) {
+    const csrftoken = getCookie('csrftoken');
+
+    // Disable buttons
+    const buttons = document.querySelector(`#action-buttons-${incidentId}`);
+    const confirmBtn = buttons.querySelector('.btn-confirm');
+    const rejectBtn = buttons.querySelector('.btn-reject');
+    confirmBtn.disabled = true;
+    rejectBtn.disabled = true;
+
+    fetch(`/incidents/api/confirm/${incidentId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrftoken,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update trust meter
+            updateTrustMeter(incidentId, data.trust_percentage, data.confirmation_count, data.cancellation_count);
+
+            // Show success message
+            showMessage(incidentId, data.message, 'success');
+
+            // Replace buttons with message
+            buttons.innerHTML = '<p class="text-muted mb-0"><i class="fas fa-check-circle me-2" style="color: #10b981;"></i>You confirmed this incident.</p>';
+
+            // Update badge on dashboard if exists
+            updatePendingBadge();
+        } else {
+            showMessage(incidentId, data.error, 'danger');
+            confirmBtn.disabled = false;
+            rejectBtn.disabled = false;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showMessage(incidentId, 'An error occurred. Please try again.', 'danger');
+        confirmBtn.disabled = false;
+        rejectBtn.disabled = false;
+    });
+}
+
+function rejectIncident(incidentId) {
+    const csrftoken = getCookie('csrftoken');
+
+    // Disable buttons
+    const buttons = document.querySelector(`#action-buttons-${incidentId}`);
+    const confirmBtn = buttons.querySelector('.btn-confirm');
+    const rejectBtn = buttons.querySelector('.btn-reject');
+    confirmBtn.disabled = true;
+    rejectBtn.disabled = true;
+
+    fetch(`/incidents/api/reject/${incidentId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrftoken,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            if (data.deleted) {
+                // Fade out and remove card
+                const card = document.querySelector(`#incident-card-${incidentId}`);
+                card.style.opacity = '0';
+                card.style.transform = 'translateX(-100px)';
+                setTimeout(() => {
+                    card.remove();
+
+                    // Check if no more incidents
+                    const remainingCards = document.querySelectorAll('[id^="incident-card-"]');
+                    if (remainingCards.length === 0) {
+                        location.reload();
+                    }
+                }, 500);
+            } else {
+                // Update trust meter
+                updateTrustMeter(incidentId, data.trust_percentage, data.confirmation_count, data.cancellation_count);
+
+                // Show success message
+                showMessage(incidentId, data.message, 'success');
+
+                // Replace buttons with message
+                buttons.innerHTML = '<p class="text-muted mb-0"><i class="fas fa-times-circle me-2" style="color: #ef4444;"></i>You rejected this incident.</p>';
+            }
+
+            // Update badge on dashboard if exists
+            updatePendingBadge();
+        } else {
+            showMessage(incidentId, data.error, 'danger');
+            confirmBtn.disabled = false;
+            rejectBtn.disabled = false;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showMessage(incidentId, 'An error occurred. Please try again.', 'danger');
+        confirmBtn.disabled = false;
+        rejectBtn.disabled = false;
+    });
+}
+
+function updateTrustMeter(incidentId, percentage, confirmCount, rejectCount) {
+    const trustFill = document.querySelector(`#trust-fill-${incidentId}`);
+    const trustPercentage = document.querySelector(`#trust-percentage-${incidentId}`);
+    const confirmationCount = document.querySelector(`#confirmation-count-${incidentId}`);
+    const cancellationCount = document.querySelector(`#cancellation-count-${incidentId}`);
+
+    // Update values
+    trustFill.style.width = percentage + '%';
+    trustFill.innerHTML = percentage > 15 ? percentage + '%' : '';
+    trustPercentage.textContent = percentage + '%';
+    confirmationCount.textContent = confirmCount;
+    cancellationCount.textContent = rejectCount;
+
+    // Update color
+    trustFill.className = 'trust-fill';
+    if (percentage < 30) {
+        trustFill.classList.add('low');
+    } else if (percentage < 70) {
+        trustFill.classList.add('medium');
+    } else {
+        trustFill.classList.add('high');
+    }
+}
+
+function showMessage(incidentId, message, type) {
+    const messageContainer = document.querySelector(`#message-${incidentId}`);
+    messageContainer.innerHTML = `
+        <div class="alert alert-${type}" role="alert">
+            <i class="fas fa-${type === 'success' ? 'check' : 'exclamation'}-circle me-2"></i>
+            ${message}
+        </div>
+    `;
+    messageContainer.style.display = 'block';
+
+    // Auto-hide after 5 seconds
+    setTimeout(() => {
+        messageContainer.style.display = 'none';
+    }, 5000);
+}
+
+function updatePendingBadge() {
+    // This will update the badge count on the dashboard when user returns
+    // The actual count will be refreshed on page load
+}
+</script>
+{% endblock %}

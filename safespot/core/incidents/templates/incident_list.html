@@ -4,144 +4,187 @@
 
 {% block content %}
 <style>
+    /* Override base.html dark theme */
     body {
-        background: #f8f9fa;
-        color: #212529;
+        background: white !important;
+        color: #212529 !important;
     }
 
-    .welcome-section {
+    body::before {
+        display: none !important;
+    }
+
+    .particle {
+        display: none !important;
+    }
+
+    /* Make navbar blue */
+    .modern-navbar {
+        background: linear-gradient(135deg, #4A90E2 0%, #1B3A57 100%) !important;
+        backdrop-filter: none !important;
+        border-bottom: none !important;
+    }
+
+    .modern-navbar .navbar-brand {
+        color: white !important;
+        -webkit-text-fill-color: white !important;
+    }
+
+    .modern-navbar .nav-link {
+        color: rgba(255, 255, 255, 0.9) !important;
+    }
+
+    .modern-navbar .nav-link:hover {
+        color: white !important;
+        background: rgba(255, 255, 255, 0.2) !important;
+    }
+
+    .modern-navbar .nav-link.active {
+        color: white !important;
+        background: rgba(255, 255, 255, 0.3) !important;
+    }
+
+    .modern-container {
+        background: white;
+    }
+
+    .modern-footer {
+        background: #f8f9fa !important;
+        color: #6c757d !important;
+        border-top: 1px solid #dee2e6 !important;
+    }
+
+    .page-header {
         background: linear-gradient(135deg, #4A90E2 0%, #1B3A57 100%);
-        color: #fdfdfd;
-        padding: 40px 0;
-        margin-bottom: 30px;
+        color: white;
+        padding: 40px;
         border-radius: 0 0 15px 15px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        margin-bottom: 30px;
     }
 
-    .card-custom {
-        background: white;
-        border: none;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        padding: 25px;
-        margin-bottom: 20px;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .card-custom:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 16px rgba(27, 58, 87, 0.15);
-    }
-
-    .section-title {
-        color: #1B3A57;
+    .page-title {
+        color: white !important;
+        font-size: 2rem;
         font-weight: 700;
-        font-size: 1.5rem;
-        margin-bottom: 20px;
-        padding-bottom: 10px;
-        border-bottom: 3px solid #4A90E2;
+        margin-bottom: 10px;
+        background: none !important;
+        -webkit-text-fill-color: white !important;
+        background-clip: unset !important;
+        -webkit-background-clip: unset !important;
     }
 
-    .btn-action {
-        background: linear-gradient(135deg, #4A90E2, #357ABD);
+    .page-subtitle {
+        color: rgba(255,255,255,0.95) !important;
+        font-size: 1rem;
+    }
+
+    .btn-back {
+        background: rgba(255,255,255,0.2);
         color: white;
-        border: none;
+        border: 2px solid rgba(255,255,255,0.3);
         padding: 10px 20px;
         border-radius: 8px;
         text-decoration: none;
-        transition: all 0.3s ease;
-        display: inline-block;
+        transition: all 0.3s;
         font-weight: 600;
     }
 
-    .btn-action:hover {
-        background: linear-gradient(135deg, #357ABD, #2E6BA8);
+    .btn-back:hover {
+        background: rgba(255,255,255,0.3);
         color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+        border-color: rgba(255,255,255,0.5);
     }
 
-    .table-custom {
+    .content-card {
+        background: white;
         border-radius: 10px;
-        overflow: hidden;
+        padding: 30px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
 
-    .table-custom thead {
-        background: linear-gradient(135deg, #1B3A57, #4A90E2);
+    .card-title {
+        color: #1B3A57;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 3px solid #4A90E2;
+    }
+
+    .table-simple {
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .table-simple thead {
+        background: #1B3A57;
         color: white;
     }
 
-    .table-custom thead th {
-        border: none;
-        padding: 15px;
+    .table-simple thead th {
+        padding: 12px;
         font-weight: 600;
-        font-size: 0.9rem;
+        border: none;
     }
 
-    .table-custom tbody tr {
-        transition: background 0.2s ease;
+    .table-simple tbody td {
+        padding: 12px;
+        border-bottom: 1px solid #e9ecef;
     }
 
-    .table-custom tbody tr:hover {
+    .table-simple tbody tr:hover {
         background: #f8f9fa;
     }
 
-    .table-custom tbody td {
-        padding: 15px;
-        border-bottom: 1px solid #e9ecef;
-        vertical-align: middle;
-    }
-
     .badge-count {
-        background: linear-gradient(135deg, #4A90E2, #357ABD);
+        background: #4A90E2;
         color: white;
-        padding: 6px 14px;
-        border-radius: 20px;
+        padding: 4px 12px;
+        border-radius: 15px;
         font-size: 0.85rem;
-        font-weight: 600;
+        margin-left: 10px;
     }
 
-    .alert-custom {
-        border-radius: 10px;
-        border: none;
-        padding: 15px 20px;
+    .empty-message {
+        text-align: center;
+        padding: 60px 20px;
+        color: #6c757d;
+    }
+
+    .empty-message i {
+        font-size: 3rem;
+        color: #dee2e6;
         margin-bottom: 20px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
 </style>
 
-<!-- Welcome Header -->
-<div class="welcome-section">
-    <div class="container-lg">
+<div class="container-lg">
+    <!-- Page Header -->
+    <div class="page-header">
         <div class="d-flex justify-content-between align-items-center">
             <div>
-                <h1 class="mb-2" style="font-size: 2rem; font-weight: 700;">
+                <h1 class="page-title">
                     <i class="fas fa-list-alt me-2"></i>User-Reported Incidents
                 </h1>
-                <p class="mb-0" style="font-size: 1.1rem; opacity: 0.95;">
-                    Summary of user-reported incidents shared through the app
-                </p>
+                <p class="page-subtitle mb-0">Summary of user-reported incidents shared through the app</p>
             </div>
-            <a href="{% url 'dashboard_home' %}" class="btn-action">
+            <a href="{% url 'dashboard_home' %}" class="btn-back">
                 <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
             </a>
         </div>
     </div>
-</div>
 
-<!-- Main Content -->
-<div class="container-lg">
-    <!-- Incident List Section -->
-    <div class="card-custom">
-        <h3 class="section-title">
-            <i class="fas fa-exclamation-triangle me-2"></i>
-            Reported Incidents
-            <span class="badge-count ms-2">{{ incidents|length }}</span>
+    <!-- Content Card -->
+    <div class="content-card">
+        <h3 class="card-title">
+            <i class="fas fa-exclamation-triangle me-2"></i>Reported Incidents
+            <span class="badge-count">{{ incidents|length }}</span>
         </h3>
 
         {% if incidents %}
             <div class="table-responsive">
-                <table class="table table-custom mb-0">
+                <table class="table-simple table">
                     <thead>
                         <tr>
                             <th>Location</th>
@@ -153,14 +196,8 @@
                     <tbody>
                         {% for incident in incidents %}
                             <tr>
-                                <td>
-                                    <i class="fas fa-map-marker-alt text-danger me-2"></i>
-                                    {{ incident.localisation }}
-                                </td>
-                                <td>
-                                    <i class="fas fa-clock text-primary me-2"></i>
-                                    {{ incident.accident_datetime|date:"M d, Y H:i" }}
-                                </td>
+                                <td>{{ incident.localisation }}</td>
+                                <td>{{ incident.accident_datetime|date:"M d, Y H:i" }}</td>
                                 <td>{{ incident.description|default:"No description" }}</td>
                                 <td>
                                     {% if incident.is_confirmed %}
@@ -179,9 +216,9 @@
                 </table>
             </div>
         {% else %}
-            <div class="text-center py-5">
-                <i class="fas fa-inbox fa-4x mb-3" style="color: #cbd5e1;"></i>
-                <p class="text-muted mb-0" style="font-size: 1.1rem;">No incidents reported at the moment</p>
+            <div class="empty-message">
+                <i class="fas fa-inbox"></i>
+                <p class="mb-0">No incidents reported at the moment</p>
                 <p class="text-muted mt-2" style="font-size: 0.9rem;">Incidents reported by users will appear here</p>
             </div>
         {% endif %}
