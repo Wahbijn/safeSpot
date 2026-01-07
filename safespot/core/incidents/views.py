@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
 from .models import Accident, UserAccidentReport
 from .forms import AccidentForm, UserAccidentReportForm, MinimalAccidentForm
 
@@ -329,4 +331,50 @@ def reject_incident_ajax(request, incident_id):
         return JsonResponse({
             'success': False,
             'error': str(e)
+        }, status=500)
+
+
+# -----------------------------
+# Admin Cancel Incident (Instant Delete)
+# -----------------------------
+@login_required
+@require_http_methods(["POST"])
+def admin_cancel_incident(request, incident_id):
+    """
+    Admin-only function to instantly cancel/delete an incident.
+    No voting required - immediate deletion.
+    """
+    # Check if user is admin
+    if not request.user.is_staff:
+        return JsonResponse({
+            "success": False,
+            "error": "Only administrators can cancel incidents."
+        }, status=403)
+
+    try:
+        incident = get_object_or_404(Accident, id=incident_id)
+
+        # Store incident details for response message
+        location = incident.localisation
+        incident_id_str = str(incident_id)
+
+        # Delete the incident
+        incident.delete()
+
+        return JsonResponse({
+            "success": True,
+            "message": f"Incident #{incident_id_str} at {location} has been cancelled successfully.",
+            "incident_id": incident_id
+        })
+
+    except Accident.DoesNotExist:
+        return JsonResponse({
+            "success": False,
+            "error": "Incident not found."
+        }, status=404)
+
+    except Exception as e:
+        return JsonResponse({
+            "success": False,
+            "error": str(e)
         }, status=500)

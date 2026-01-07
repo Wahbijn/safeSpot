@@ -15,4 +15,7 @@ urlpatterns = [
     path('pending/', views.pending_incidents, name='pending_incidents'),
     path('api/confirm/<int:incident_id>/', views.confirm_incident_ajax, name='confirm_incident_ajax'),
     path('api/reject/<int:incident_id>/', views.reject_incident_ajax, name='reject_incident_ajax'),
+
+    # Admin actions
+    path('api/admin-cancel/<int:incident_id>/', views.admin_cancel_incident, name='admin_cancel_incident'),
 ]

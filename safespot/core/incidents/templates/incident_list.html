@@ -157,6 +157,70 @@
         color: #dee2e6;
         margin-bottom: 20px;
     }
+
+    /* Admin Cancel Button Styling */
+    .btn-admin-cancel {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .btn-admin-cancel:hover {
+        background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.5);
+        transform: translateY(-2px);
+    }
+
+    .btn-admin-cancel:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
+    }
+
+    .btn-admin-cancel i {
+        font-size: 1rem;
+    }
+
+    /* Loading state */
+    .btn-admin-cancel.loading {
+        opacity: 0.6;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    .btn-admin-cancel.loading i {
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    /* Row deletion animation */
+    @keyframes fadeOutRow {
+        from {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateX(-100%);
+        }
+    }
+
+    .deleting-row {
+        animation: fadeOutRow 0.5s ease forwards;
+    }
 </style>
 
 <div class="container-lg">
@@ -191,11 +255,14 @@
                             <th>Date & Time</th>
                             <th>Description</th>
                             <th>Status</th>
+                            {% if user.is_staff %}
+                            <th>Actions</th>
+                            {% endif %}
                         </tr>
                     </thead>
                     <tbody>
                         {% for incident in incidents %}
-                            <tr>
+                            <tr id="incident-row-{{ incident.id }}">
                                 <td>{{ incident.localisation }}</td>
                                 <td>{{ incident.accident_datetime|date:"M d, Y H:i" }}</td>
                                 <td>{{ incident.description|default:"No description" }}</td>
@@ -210,6 +277,16 @@
                                         </span>
                                     {% endif %}
                                 </td>
+                                {% if user.is_staff %}
+                                <td>
+                                    <button class="btn-admin-cancel"
+                                            onclick="cancelIncident({{ incident.id }}, '{{ incident.localisation|escapejs }}')"
+                                            id="cancel-btn-{{ incident.id }}">
+                                        <i class="fas fa-times-circle"></i>
+                                        Cancel
+                                    </button>
+                                </td>
+                                {% endif %}
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -224,4 +301,132 @@
         {% endif %}
     </div>
 </div>
+
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function cancelIncident(incidentId, location) {
+    // Confirm with admin
+    if (!confirm(`Are you sure you want to cancel this incident?\n\nLocation: ${location}\nID: ${incidentId}\n\nThis action cannot be undone.`)) {
+        return;
+    }
+
+    const btn = document.getElementById(`cancel-btn-${incidentId}`);
+    const row = document.getElementById(`incident-row-${incidentId}`);
+
+    // Show loading state
+    btn.classList.add('loading');
+    btn.innerHTML = '<i class="fas fa-spinner"></i> Cancelling...';
+
+    // Send AJAX request
+    fetch(`/incidents/api/admin-cancel/${incidentId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json'
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show success message
+            showToast('✅ ' + data.message, 'success');
+
+            // Animate row deletion
+            row.classList.add('deleting-row');
+
+            // Remove row after animation
+            setTimeout(() => {
+                row.remove();
+
+                // Check if table is empty
+                const tbody = document.querySelector('.table-simple tbody');
+                if (tbody && tbody.children.length === 0) {
+                    // Reload page to show empty state
+                    location.reload();
+                }
+            }, 500);
+        } else {
+            // Show error
+            showToast('❌ Error: ' + data.error, 'error');
+            btn.classList.remove('loading');
+            btn.innerHTML = '<i class="fas fa-times-circle"></i> Cancel';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('❌ An error occurred. Please try again.', 'error');
+        btn.classList.remove('loading');
+        btn.innerHTML = '<i class="fas fa-times-circle"></i> Cancel';
+    });
+}
+
+function showToast(message, type) {
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'};
+        color: white;
+        padding: 16px 24px;
+        border-radius: 10px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        z-index: 10000;
+        font-weight: 600;
+        animation: slideInRight 0.3s ease;
+        max-width: 400px;
+    `;
+    toast.textContent = message;
+
+    // Add animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+
+    document.body.appendChild(toast);
+
+    // Remove after 4 seconds with animation
+    setTimeout(() => {
+        toast.style.animation = 'slideOutRight 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+    }, 4000);
+}
+</script>
 {% endblock %}
